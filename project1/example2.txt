@@ -1,0 +1,15 @@
+color 3
+loop 40 {
+  up
+  forward 10
+  down
+  loop 4 {
+    forward 50
+    right 90
+  }
+  up
+  right 180
+  forward 10
+  right 180
+  right 9
+}

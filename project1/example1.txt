@@ -1,0 +1,26 @@
+forward 30
+right 90
+forward 30
+left 90
+
+color 1
+forward 30
+right 90
+forward 30
+left 90
+
+origin
+left 90
+
+color 2
+forward 30
+left 90
+forward 30
+right 90
+
+color 3
+forward 30
+left 90
+forward 30
+right 90
+
