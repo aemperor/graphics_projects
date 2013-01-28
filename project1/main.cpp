@@ -66,8 +66,8 @@ void Display() {
     for (int i = 0; i < points.size(); ++i) {
       glColor3fv(color);
       glBegin(GL_LINE_STRIP);
-      glVertex2i(points[i].x, .5 - points[i].y);
-      cout << "x, y" << points[i].x << "," << points[i].y << endl;
+      glVertex2i(points[i].x, points[i].y);
+      cout << "(x, y) = (" << points[i].x << ", " << points[i].y << ")" << endl;
     }
     glEnd();
   }
