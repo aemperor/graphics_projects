@@ -55,6 +55,7 @@ const Color three = Color(0, 0, 1);  // blue
 
 Color color = zero;
 float direction[2] = {1.0, 1.0};
+double degree = 90;  // default degree is 90 degrees (since forward up is 90)
 int penState = 0;  // down = 0; up = 1
 
 void Display() {
@@ -84,29 +85,48 @@ void Display() {
 }
 
 /*
+  Function to round number to specific precision
+*/
+float round(float f) {
+    return floor(f*5 + 0.5)/5;
+}
+
+/*
   Function changes the direction of the line based on the angle given
   stores the new direction in the direction vector
-  dir = 0 //left [0, 1]
-  dir = 1 //right [1, 0]
+  dir = -1 //right 
+  dir = 1 //left
+
+  degrees for different directions:
+  forward : 90 (up)
+  right : 0
+  left : 180
+  down : 270
+
+  This function will first multiply the desired angle with dir, 
+  and adds to the current degree
+  ex.) the current degree is 90 , next command is right 90 and forward 30, current coordinate is (0, 30)
+      degree = 90 * (-1) + 90 = 0
+	  dir for x - coordinate = cos (0) = 1
+	  dir for y - coordinate = sin (0) = 0
+	  Then forward 30 
+      last. x + (1) * 30 => 30
+      last. y + (0) * 30 => 30
+      The new coordinate becomes (30, 30)
 */
 void rotate(int angle, int dir) {
-  float sine = sin(angle);
-  float cosine = cos(angle);
   float temp1, temp2;
+  degree = (dir * angle) + degree;
 
-  if (dir == 0) {
-    temp1 = (cosine * direction[0]) + ((-1 * sine) * direction[1]);
-    temp2 = (sine * direction[0]) + (cosine * direction[1]);
-    direction[0] = temp1;
-    direction[1] = temp2;
-  }
-  if (dir == 1) {
-    temp1 = (cosine * direction[1]) + ((-1 * sine) * direction[0]);
-    temp2 = (sine * direction[1]) + (cosine * direction[0]);
-    direction[0] = temp1;
-    direction[1] = temp2;
-  }
-  cout << "dir" << dir << endl;
+  if (degree < 0)
+    degree = degree + 360;
+  if (degree > 359)
+    degree = degree - 360;
+  cout << "current degree " << degree << endl;
+  temp1 = cos((degree) * M_PI / 180);
+  temp2 = sin((degree) * M_PI / 180);
+  direction[0] = round(temp1);
+  direction[1] = round(temp2);
   cout << "rotate_direction[0]" << direction[0] << endl;
   cout << "rotate_direction[1]" << direction[1] << endl;
 }
@@ -115,29 +135,29 @@ void Interpret(const vector<Command>& commands) {
   // TODO: Interpret each command one-by-one.
   // TODO: Remove output statements as you implement them.
   Point2 last = Point2(0.0, 0.0);
+  int dir;
   for (int i = 0; i < commands.size(); ++i) {
     const Command& c = commands[i];
-    // cout << "commands[i]" << c.arg() << endl;
     switch (c.name()) {
     case FORWARD:
-      if (points.size() <= 0)  // special case for first point
+      if (points.size() <= 0) {  // special case for first point
         points.push_back(Point2(0, c.arg()));
-      if (points.size() > 0) {
+      } else {
         last = Point2(points[points.size() - 1].x,
                       points[points.size() - 1].y);
-        cout << "direction[0]" << direction[0] << endl;
-        cout << "direction[1]" << direction[1] << endl;
         points.push_back(Point2(last.x + (c.arg() * direction[0]),
                            last.y + (c.arg() * direction[1])));
       }
       // cout << "forward " << c.arg() << endl;
       break;
     case RIGHT:
-      rotate(c.arg(), 1);
+      dir = -1;
+      rotate(c.arg(), dir);
       // cout << "right " << c.arg() << endl;
       break;
     case LEFT:
-      rotate(c.arg(), 0);
+      dir = 1;
+      rotate(c.arg(), dir);
       // cout << "left " << c.arg() << endl;
       break;
     case PEN_UP:
