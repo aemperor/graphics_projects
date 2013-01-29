@@ -140,7 +140,9 @@ void Interpret(const vector<Command>& commands) {
     const Command& c = commands[i];
     switch (c.name()) {
     case FORWARD:
-      if (points.size() <= 0) {  // special case for first point
+      if (points.size() <= 0) {
+        // special case for first point, default = (0,0)
+        points.push_back(Point2(0, 0));
         points.push_back(Point2(0, c.arg()));
       } else {
         last = Point2(points[points.size() - 1].x,
