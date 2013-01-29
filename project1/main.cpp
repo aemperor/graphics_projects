@@ -46,6 +46,7 @@ struct Point2 {
 // };
 
 vector<Point2> points;
+vector<Color> colors;
 
 // Colors
 const Color zero = Color(0, 0, 0);  // black
@@ -61,26 +62,19 @@ int penState = 0;  // down = 0; up = 1
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT);
   // TODO: Change to draw according to turtle commands given
-  // Draw a red triangle.
   if (penState == 0) {
-    for (int i = 0; i < points.size(); ++i) {
-      glColor3fv(color);
+    for (int i = 0; i < points.size(); ++i) {  // colors and points 1-1
+      glColor3fv(colors[i]);
       glBegin(GL_LINE_STRIP);
+      if (i > 0)  // prevent interpolation
+        glVertex2i(points[i-1].x, points[i-1].y);
       glVertex2i(points[i].x, points[i].y);
-      cout << "(x, y) = (" << points[i].x << ", " << points[i].y << ")" << endl;
+      cout << "color: " << colors[i] << endl;
+      cout << "(x, y) = (" << points[i].x << ", " << points[i].y
+           << ")" << endl;
     }
     glEnd();
   }
-  /*glBegin(GL_LINES);
-  glColor3fv(color);
-  glVertex2f(-0.5, -0.5);
-  glVertex2f(0.5, -0.5);
-  glVertex2f(0.5, -0.5);
-  glVertex2f(0.0, 0.5);
-  glVertex2f(0.0, 0.5);
-  glVertex2f(-0.5, -0.5);
-  glEnd();*/
-
   glFlush();
 }
 
@@ -122,13 +116,13 @@ void rotate(int angle, int dir) {
     degree = degree + 360;
   if (degree > 359)
     degree = degree - 360;
-  cout << "current degree " << degree << endl;
+  // cout << "current degree " << degree << endl;
   temp1 = cos((degree) * M_PI / 180);
   temp2 = sin((degree) * M_PI / 180);
   direction[0] = round(temp1);
   direction[1] = round(temp2);
-  cout << "rotate_direction[0]" << direction[0] << endl;
-  cout << "rotate_direction[1]" << direction[1] << endl;
+  // cout << "rotate_direction[0]" << direction[0] << endl;
+  // cout << "rotate_direction[1]" << direction[1] << endl;
 }
 
 void Interpret(const vector<Command>& commands) {
@@ -150,38 +144,38 @@ void Interpret(const vector<Command>& commands) {
         points.push_back(Point2(last.x + (c.arg() * direction[0]),
                            last.y + (c.arg() * direction[1])));
       }
-      // cout << "forward " << c.arg() << endl;
+      colors.push_back(color);  // add color for each point
       break;
     case RIGHT:
       dir = -1;
       rotate(c.arg(), dir);
-      // cout << "right " << c.arg() << endl;
       break;
     case LEFT:
       dir = 1;
       rotate(c.arg(), dir);
-      // cout << "left " << c.arg() << endl;
       break;
     case PEN_UP:
       penState = 1;
-      // cout << "pen up" << endl;
       break;
     case PEN_DOWN:
       penState = 0;
-      // cout << "pen down" << endl;
       break;
     case COLOR:
-      if (c.arg() == 1)
+      if (c.arg() == 1) {
          color = one;
-      if (c.arg() == 2)
+         // colors.push_back(one);
+      }
+      if (c.arg() == 2) {
         color = two;
-      if (c.arg() == 3)
+        // colors.push_back(two);
+      }
+      if (c.arg() == 3) {
         color = three;
-      // cout << "color " << c.arg() << endl;
+        // colors.push_back(three);
+      }
       break;
     case ORIGIN:
       points.push_back(Point2(0, 0));
-      // cout << "origin" << endl;
       break;
     }
   }
@@ -198,7 +192,8 @@ void Keyboard(unsigned char key, int x, int y) {
 int main(int argc, char** argv) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-  glutInitWindowSize(200, 200);
+  // glutInitWindowSize(200, 200);
+  glutInitWindowSize(500, 500);
   glutInitWindowPosition(0, 0);
   // DO NOT change the window title.  It is necessary for the screen capture.
   glutCreateWindow("Turtle graphics");
