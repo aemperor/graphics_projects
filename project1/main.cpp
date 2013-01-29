@@ -16,7 +16,7 @@ void Init() {
   // TODO: Change this call so that the drawing methods work on a canvas
   // that is 200x200 units with the origin (0, 0) at the center of the
   // canvas.
-  gluOrtho2D(-1.0, 1.0, -1.0, 1.0);
+  gluOrtho2D(-100.0, 100.0, -100.0, 100.0);
   glMatrixMode(GL_MODELVIEW);
 }
 
