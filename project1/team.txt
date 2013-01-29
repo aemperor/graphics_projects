@@ -1,0 +1,11 @@
+Team Member 1
+-----------------------
+Name: Alexis Emperador
+CSid: aemperor
+UTeid: ase369
+
+Team Member 2
+----------------------
+Name: Sharon Chung
+CSid: sharonc
+UTeid: hc6746
