@@ -31,22 +31,21 @@ struct Color {
 };
 
 struct Point2 {
+  int penState;
   Point2(GLfloat _x, GLfloat _y) : x(_x), y(_y) {}
   GLfloat x, y;
 };
 
-// debugging
-// struct Point2 {
-//   Point2(GLint _x, GLint _y) {
-//     x[0] = _x;
-//     x[1] = _y;
-//   }
-//   operator GLint*() { return x; }
-//   GLint x[2];
-// };
+struct Pen {
+  explicit Pen(int p) {
+    penState = p;
+  }
+  int penState;
+};
 
 vector<vector<Point2> > lines;
 vector<Color> colors;
+vector<Pen> pens;
 
 // Colors
 const Color zero = Color(0, 0, 0);  // black
@@ -63,21 +62,25 @@ int penState = 0;  // down = 0; up = 1
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT);
   // TODO: Change to draw according to turtle commands given
-  if (penState == 0) {
-    cout << "colors size = " << colors.size() << endl;
-    cout << "lines size = " << lines.size() << endl;
-    for (int i = 0; i < lines.size(); ++i) {  // colors and points 1-1
-      cout << "points size : " << lines[i].size() << endl;
+  // cout << "colors size = " << colors.size() << endl;
+  cout << "lines size = " << lines.size() << endl;
+  cout << "pen size = " << pens.size() << endl;
+  for (int i = 0; i < lines.size(); ++i) {  // colors and points 1-1
+    //  cout << "points size : " << lines[i].size() << endl;
+    if (pens[i].penState == 0) {
+      // cout << "pen state = 0 (down)" << endl;
       for (int j = 0; j < lines[i].size(); ++j) {
         glColor3fv(colors[i]);
         glBegin(GL_LINES);
         glVertex2i(lines[i][j].x, lines[i][j].y);
-        cout << "(x, y) = (" << lines[i][j].x << ", " << lines[i][j].y
-           << ")" << endl;
+        // cout << "(x, y) = (" << lines[i][j].x << ", " << lines[i][j].y
+           // << ")" << endl;
       }
+    } else {
+          // cout << "pen state = 1 (UP)" << endl;
     }
-    glEnd();
   }
+  glEnd();
   glFlush();
 }
 
@@ -131,6 +134,7 @@ void Interpret(const vector<Command>& commands) {
   // TODO: Remove output statements as you implement them.
   int dir;
   int pos1, pos2, prev;
+  cout << "command size : " << commands.size() << endl;
   for (int i = 0; i < commands.size(); ++i) {
     vector<Point2> points;
     const Command& c = commands[i];
@@ -140,8 +144,6 @@ void Interpret(const vector<Command>& commands) {
         // special case for first point, default = (0,0)
         points.push_back(Point2(0, 0));
         points.push_back(Point2(0, c.arg()));
-        lines.push_back(points);
-        colors.push_back(color);
       } else {
         pos1 = lines.size() - 1;
         pos2 = lines[lines.size() - 1].size() - 1;
@@ -151,6 +153,7 @@ void Interpret(const vector<Command>& commands) {
         points.push_back(Point2(last.x + (c.arg() * direction[0]),
                            last.y + (c.arg() * direction[1])));  // current
       }
+      pens.push_back(Pen(penState));
       lines.push_back(points);
       colors.push_back(color);  // add color for each point
       break;
@@ -164,9 +167,11 @@ void Interpret(const vector<Command>& commands) {
       break;
     case PEN_UP:
       penState = 1;
+      // cout << "PEN_UP" << endl;
       break;
     case PEN_DOWN:
       penState = 0;
+      // cout << "PEN_DOWN " << i << endl;
       break;
     case COLOR:
       if (c.arg() == 1) {
@@ -182,6 +187,7 @@ void Interpret(const vector<Command>& commands) {
     case ORIGIN:
       points.push_back(Point2(0, 0));
       points.push_back(Point2(0, 0));
+      pens.push_back(Pen(penState));
       lines.push_back(points);
       colors.push_back(color);
       break;
