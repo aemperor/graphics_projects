@@ -52,7 +52,6 @@ const Color zero = Color(0, 0, 0);  // black
 const Color one = Color(1, 0, 0);  // red
 const Color two = Color(0, 1, 0);  // green
 const Color three = Color(0, 0, 1);  // blue
-const Color white = Color(1, 1, 1);  // white
 
 Color color = zero;
 float direction[2] = {1.0, 1.0};
@@ -62,22 +61,17 @@ int penState = 0;  // down = 0; up = 1
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT);
   // TODO: Change to draw according to turtle commands given
-  // cout << "colors size = " << colors.size() << endl;
   cout << "lines size = " << lines.size() << endl;
   cout << "pen size = " << pens.size() << endl;
   for (int i = 0; i < lines.size(); ++i) {  // colors and points 1-1
-    //  cout << "points size : " << lines[i].size() << endl;
     if (pens[i].penState == 0) {
-      // cout << "pen state = 0 (down)" << endl;
       for (int j = 0; j < lines[i].size(); ++j) {
         glColor3fv(colors[i]);
         glBegin(GL_LINES);
         glVertex2i(lines[i][j].x, lines[i][j].y);
         // cout << "(x, y) = (" << lines[i][j].x << ", " << lines[i][j].y
-           // << ")" << endl;
+           //  << ")" << endl;
       }
-    } else {
-          // cout << "pen state = 1 (UP)" << endl;
     }
   }
   glEnd();
@@ -140,8 +134,10 @@ void Interpret(const vector<Command>& commands) {
     const Command& c = commands[i];
     switch (c.name()) {
     case FORWARD:
+      cout << "lines.size()" << lines.size() << endl;
       if (lines.size() <= 0) {
         // special case for first point, default = (0,0)
+        cout << "INSIDE IF" << endl;
         points.push_back(Point2(0, 0));
         points.push_back(Point2(0, c.arg()));
       } else {
@@ -154,6 +150,7 @@ void Interpret(const vector<Command>& commands) {
                            last.y + (c.arg() * direction[1])));  // current
       }
       pens.push_back(Pen(penState));
+      cout << "IM PUSHING" << endl;
       lines.push_back(points);
       colors.push_back(color);  // add color for each point
       break;
@@ -167,22 +164,17 @@ void Interpret(const vector<Command>& commands) {
       break;
     case PEN_UP:
       penState = 1;
-      // cout << "PEN_UP" << endl;
       break;
     case PEN_DOWN:
       penState = 0;
-      // cout << "PEN_DOWN " << i << endl;
       break;
     case COLOR:
-      if (c.arg() == 1) {
+      if (c.arg() == 1)
          color = one;
-      }
-      if (c.arg() == 2) {
+      if (c.arg() == 2)
         color = two;
-      }
-      if (c.arg() == 3) {
+      if (c.arg() == 3)
         color = three;
-      }
       break;
     case ORIGIN:
       points.push_back(Point2(0, 0));
@@ -206,8 +198,8 @@ void Keyboard(unsigned char key, int x, int y) {
 int main(int argc, char** argv) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-  // glutInitWindowSize(200, 200);
-  glutInitWindowSize(500, 500);
+  glutInitWindowSize(200, 200);
+  // glutInitWindowSize(500, 500);
   glutInitWindowPosition(0, 0);
   // DO NOT change the window title.  It is necessary for the screen capture.
   glutCreateWindow("Turtle graphics");
