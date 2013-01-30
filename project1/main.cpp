@@ -45,7 +45,7 @@ struct Point2 {
 //   GLint x[2];
 // };
 
-vector<Point2> points;
+vector<vector<Point2> > lines;
 vector<Color> colors;
 
 // Colors
@@ -53,6 +53,7 @@ const Color zero = Color(0, 0, 0);  // black
 const Color one = Color(1, 0, 0);  // red
 const Color two = Color(0, 1, 0);  // green
 const Color three = Color(0, 0, 1);  // blue
+const Color white = Color(1, 1, 1);  // white
 
 Color color = zero;
 float direction[2] = {1.0, 1.0};
@@ -63,15 +64,17 @@ void Display() {
   glClear(GL_COLOR_BUFFER_BIT);
   // TODO: Change to draw according to turtle commands given
   if (penState == 0) {
-    for (int i = 0; i < points.size(); ++i) {  // colors and points 1-1
-      glColor3fv(colors[i]);
-      glBegin(GL_LINE_STRIP);
-      if (i > 0)  // prevent interpolation
-        glVertex2i(points[i-1].x, points[i-1].y);
-      glVertex2i(points[i].x, points[i].y);
-      cout << "color: " << colors[i] << endl;
-      cout << "(x, y) = (" << points[i].x << ", " << points[i].y
+    cout << "colors size = " << colors.size() << endl;
+    cout << "lines size = " << lines.size() << endl;
+    for (int i = 0; i < lines.size(); ++i) {  // colors and points 1-1
+      cout << "points size : " << lines[i].size() << endl;
+      for (int j = 0; j < lines[i].size(); ++j) {
+        glColor3fv(colors[i]);
+        glBegin(GL_LINES);
+        glVertex2i(lines[i][j].x, lines[i][j].y);
+        cout << "(x, y) = (" << lines[i][j].x << ", " << lines[i][j].y
            << ")" << endl;
+      }
     }
     glEnd();
   }
@@ -121,29 +124,34 @@ void rotate(int angle, int dir) {
   temp2 = sin((degree) * M_PI / 180);
   direction[0] = round(temp1);
   direction[1] = round(temp2);
-  // cout << "rotate_direction[0]" << direction[0] << endl;
-  // cout << "rotate_direction[1]" << direction[1] << endl;
 }
 
 void Interpret(const vector<Command>& commands) {
   // TODO: Interpret each command one-by-one.
   // TODO: Remove output statements as you implement them.
-  Point2 last = Point2(0.0, 0.0);
   int dir;
+  int pos1, pos2, prev;
   for (int i = 0; i < commands.size(); ++i) {
+    vector<Point2> points;
     const Command& c = commands[i];
     switch (c.name()) {
     case FORWARD:
-      if (points.size() <= 0) {
+      if (lines.size() <= 0) {
         // special case for first point, default = (0,0)
         points.push_back(Point2(0, 0));
         points.push_back(Point2(0, c.arg()));
+        lines.push_back(points);
+        colors.push_back(color);
       } else {
-        last = Point2(points[points.size() - 1].x,
-                      points[points.size() - 1].y);
+        pos1 = lines.size() - 1;
+        pos2 = lines[lines.size() - 1].size() - 1;
+        Point2 last = Point2(lines[pos1][pos2].x,
+                      lines[pos1][pos2].y);
+        points.push_back(Point2(last.x, last.y));  // add previous coordinate
         points.push_back(Point2(last.x + (c.arg() * direction[0]),
-                           last.y + (c.arg() * direction[1])));
+                           last.y + (c.arg() * direction[1])));  // current
       }
+      lines.push_back(points);
       colors.push_back(color);  // add color for each point
       break;
     case RIGHT:
@@ -163,19 +171,19 @@ void Interpret(const vector<Command>& commands) {
     case COLOR:
       if (c.arg() == 1) {
          color = one;
-         // colors.push_back(one);
       }
       if (c.arg() == 2) {
         color = two;
-        // colors.push_back(two);
       }
       if (c.arg() == 3) {
         color = three;
-        // colors.push_back(three);
       }
       break;
     case ORIGIN:
       points.push_back(Point2(0, 0));
+      points.push_back(Point2(0, 0));
+      lines.push_back(points);
+      colors.push_back(color);
       break;
     }
   }
