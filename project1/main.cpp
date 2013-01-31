@@ -54,7 +54,7 @@ const Color two = Color(0, 1, 0);  // green
 const Color three = Color(0, 0, 1);  // blue
 
 Color color = zero;
-float direction[2] = {1.0, 1.0};
+float direction[2] = {0.0, 1.0};
 double degree = 90;  // default degree is 90 degrees (since forward up is 90)
 int penState = 0;  // down = 0; up = 1
 
@@ -82,7 +82,7 @@ void Display() {
   Function to round number to specific precision
 */
 float round(float f) {
-    return floor(f*5 + 0.5)/5;
+    return floor(f*100000000 + 0.5)/100000000;
 }
 
 /*
@@ -121,6 +121,8 @@ void rotate(int angle, int dir) {
   temp2 = sin((degree) * M_PI / 180);
   direction[0] = round(temp1);
   direction[1] = round(temp2);
+  cout << direction[0] << endl;
+  cout << direction[1] << endl;
 }
 
 void Interpret(const vector<Command>& commands) {
@@ -134,10 +136,10 @@ void Interpret(const vector<Command>& commands) {
     const Command& c = commands[i];
     switch (c.name()) {
     case FORWARD:
-      cout << "lines.size()" << lines.size() << endl;
+      // cout << "lines.size()" << lines.size() << endl;
       if (lines.size() <= 0) {
         // special case for first point, default = (0,0)
-        cout << "INSIDE IF" << endl;
+        // cout << "INSIDE IF" << endl;
         points.push_back(Point2(0, 0));
         points.push_back(Point2(0, c.arg()));
       } else {
@@ -150,7 +152,7 @@ void Interpret(const vector<Command>& commands) {
                            last.y + (c.arg() * direction[1])));  // current
       }
       pens.push_back(Pen(penState));
-      cout << "IM PUSHING" << endl;
+      // cout << "IM PUSHING" << endl;
       lines.push_back(points);
       colors.push_back(color);  // add color for each point
       break;
