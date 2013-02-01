@@ -1,0 +1,152 @@
+color 3
+up
+forward 20
+right 90
+forward 50
+loop 40 {
+  up
+  forward 10
+  color 1
+  down
+  loop 4 {
+    forward 15
+    color 3
+    right 90
+  }
+  up
+  right 180
+  forward 10
+  right 180
+  right 9
+}
+
+// t
+up
+color 2
+origin
+left 180
+forward 80
+down
+right 90
+forward 20
+left 90
+forward 10
+right 90
+forward 10
+right 90
+forward 10
+left 90
+forward 15
+right 90
+forward 10
+right 90
+forward 15
+left 90
+forward 10
+right 90
+forward 10
+left 270
+forward 10
+right 270
+forward 20
+left 90
+forward 10
+right 90
+forward 10
+left 270
+forward 20
+right 90
+forward 10
+
+// u
+up
+origin
+left 90
+forward 60
+down
+right 90
+forward 20
+left 270
+forward 10
+right 90
+forward 15
+left 90
+forward 5
+right 270
+forward 15
+left 270
+forward 10
+right 90
+forward 30
+left 270
+forward 25
+right 90
+forward 10
+
+// r
+up
+origin
+left 90
+forward 35 
+down
+right 90
+forward 20
+left 270
+forward 5
+right 90
+forward 5
+left 90
+forward 3
+right 270 
+forward 5
+left 270
+forward 10
+right 90
+forward 5
+left 90
+foward 5
+right 270
+forward 5
+left 270
+forward 10
+right 270 
+forward 20
+left 270
+forward 10
+
+// t
+up
+origin
+forward 17
+down
+right 90
+forward 20
+left 90
+forward 10
+right 90
+forward 10
+left 270 
+forward 10
+right 270
+forward 15
+left 270
+forward 10
+right 90 
+forward 15
+left 90
+forward 10
+right 90
+forward 10
+left 270 
+forward 10
+right 270
+forward 20
+left 90
+forward 10
+right 90
+forward 10
+left 270
+forward 20
+right 90
+forward 10
+

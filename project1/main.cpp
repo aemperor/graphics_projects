@@ -61,8 +61,6 @@ int penState = 0;  // down = 0; up = 1
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT);
   // TODO: Change to draw according to turtle commands given
-  cout << "lines size = " << lines.size() << endl;
-  cout << "pen size = " << pens.size() << endl;
   for (int i = 0; i < lines.size(); ++i) {  // colors and points 1-1
     if (pens[i].penState == 0) {
       for (int j = 0; j < lines[i].size(); ++j) {
@@ -116,13 +114,12 @@ void rotate(int angle, int dir) {
     degree = degree + 360;
   if (degree > 359)
     degree = degree - 360;
-  // cout << "current degree " << degree << endl;
   temp1 = cos((degree) * M_PI / 180);
   temp2 = sin((degree) * M_PI / 180);
   direction[0] = round(temp1);
   direction[1] = round(temp2);
-  cout << direction[0] << endl;
-  cout << direction[1] << endl;
+  // cout << direction[0] << endl;
+  // cout << direction[1] << endl;
 }
 
 void Interpret(const vector<Command>& commands) {
@@ -130,16 +127,13 @@ void Interpret(const vector<Command>& commands) {
   // TODO: Remove output statements as you implement them.
   int dir;
   int pos1, pos2, prev;
-  cout << "command size : " << commands.size() << endl;
   for (int i = 0; i < commands.size(); ++i) {
     vector<Point2> points;
     const Command& c = commands[i];
     switch (c.name()) {
     case FORWARD:
-      // cout << "lines.size()" << lines.size() << endl;
       if (lines.size() <= 0) {
         // special case for first point, default = (0,0)
-        // cout << "INSIDE IF" << endl;
         points.push_back(Point2(0, 0));
         points.push_back(Point2(0, c.arg()));
       } else {
@@ -152,7 +146,6 @@ void Interpret(const vector<Command>& commands) {
                            last.y + (c.arg() * direction[1])));  // current
       }
       pens.push_back(Pen(penState));
-      // cout << "IM PUSHING" << endl;
       lines.push_back(points);
       colors.push_back(color);  // add color for each point
       break;
