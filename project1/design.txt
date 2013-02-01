@@ -1,24 +1,6 @@
-color 3
+// proper orientation
 up
-forward 20
-right 90
-forward 50
-loop 40 {
-  up
-  forward 10
-  color 1
-  down
-  loop 4 {
-    forward 15
-    color 3
-    right 90
-  }
-  up
-  right 180
-  forward 10
-  right 180
-  right 9
-}
+right 270
 
 // t
 up
@@ -150,3 +132,110 @@ forward 20
 right 90
 forward 10
 
+// l
+up
+origin
+left 270
+forward 3
+down
+right 270
+forward 45
+left 270
+forward 10
+right 90
+forward 55
+left 270
+forward 4
+
+// e
+left 180
+forward 35
+right 270
+forward 10
+left 90 
+forward 15
+right 90
+forward 5
+left 270
+forward 15
+right 270
+forward 15
+left 90
+forward 23
+up
+
+// fireworks
+color 3
+up
+forward 40
+right 90
+forward 80
+loop 40 {
+  up
+  forward 10
+  color 1
+  down
+  loop 4 {
+    forward 15
+    color 3
+    right 90
+  }
+  up
+  right 180
+  forward 10
+  right 180
+  right 9
+}
+
+up
+origin
+left 90
+forward 60
+right 270
+forward 60
+loop 60 {
+  down
+  color 3
+  forward 10
+  loop 4 {
+    forward 10
+    color 2
+    right 90
+  }
+  up
+  right 180
+  forward 10
+  right 180
+  right 6 
+}
+
+up
+origin
+left 180
+color 1
+forward 70
+right 90
+forward 90
+down
+loop 40 {
+  up
+  forward 10
+  color 2
+  down
+  loop 4 {
+    forward 15
+    color 3
+    right 90
+  }
+  up
+  right 180
+  forward 10
+  right 180
+  right 9
+}
+
+down
+origin
+left 90 
+color 0
+forward 50

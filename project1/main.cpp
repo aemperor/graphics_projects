@@ -164,6 +164,8 @@ void Interpret(const vector<Command>& commands) {
       penState = 0;
       break;
     case COLOR:
+      if (c.arg() == 0)
+        color = zero;
       if (c.arg() == 1)
          color = one;
       if (c.arg() == 2)
