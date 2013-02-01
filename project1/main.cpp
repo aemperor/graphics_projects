@@ -16,6 +16,8 @@ void Init() {
   // TODO: Change this call so that the drawing methods work on a canvas
   // that is 200x200 units with the origin (0, 0) at the center of the
   // canvas.
+  glutInitWindowSize(200, 200);
+  glutInitWindowPosition(0, 0);
   gluOrtho2D(-100.0, 100.0, -100.0, 100.0);
   glMatrixMode(GL_MODELVIEW);
 }
@@ -195,9 +197,7 @@ void Keyboard(unsigned char key, int x, int y) {
 int main(int argc, char** argv) {
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-  glutInitWindowSize(200, 200);
-  // glutInitWindowSize(500, 500);
-  glutInitWindowPosition(0, 0);
+  glutInitWindowSize(500, 500);
   // DO NOT change the window title.  It is necessary for the screen capture.
   glutCreateWindow("Turtle graphics");
   glutDisplayFunc(Display);

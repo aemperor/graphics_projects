@@ -4,7 +4,7 @@ right 270
 
 // t
 up
-color 2
+color 0
 origin
 left 180
 forward 80
@@ -224,7 +224,7 @@ loop 40 {
   down
   loop 4 {
     forward 15
-    color 3
+    color 0
     right 90
   }
   up
@@ -234,8 +234,50 @@ loop 40 {
   right 9
 }
 
-down
+// turtle
+up
 origin
-left 90 
-color 0
+color 2
+right 90
 forward 50
+left 90
+down
+forward 10
+right 270
+forward 10
+left 270
+forward 30
+right 90
+forward 10
+
+color 0
+left 90
+forward 3
+right 270
+forward 5
+left 270
+forward 10
+right 90
+forward 10
+left 270
+forward 13
+right 270
+forward 8
+left 270 
+forward 5
+right 90
+forward 8
+color 2
+left 90
+forward 17
+color 0
+right 270
+forward 8
+left 270
+forward 5
+right 90
+forward 8
+color 2
+right 290
+forward 10
+
