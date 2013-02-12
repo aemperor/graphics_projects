@@ -1,3 +1,4 @@
+#include <math.h>
 #include <iostream>
 #include <vector>
 #include "./common.h"
@@ -37,6 +38,21 @@ void Display() {
   glVertex2f(window_width - 100, window_height - 100);
   glVertex2f(window_width - 100, -1*window_height + 100);
   glVertex2f(-1*window_width + 100, -1*window_height + 100);
+  glEnd();
+
+  float x1, y1, x2, y2;
+  float angle;
+  double radius = 30.0;
+  x1 = -1*window_width + 100;
+  y1 = window_height - 100;
+  glColor3f(0.0, 0.0, 0.0);
+  glBegin(GL_TRIANGLE_FAN);
+  glVertex2f(x1, y1);
+  for (angle = 1.0f; angle < 361.0f; angle += 0.2) {
+    x2 = x1+sin(angle)*radius;
+    y2 = y1+cos(angle)*radius;
+    glVertex2f(x2, y2);
+  }
   glEnd();
 
 
