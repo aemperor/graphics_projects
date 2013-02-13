@@ -12,6 +12,8 @@ GLint window_height = 600;
 Point2 mouse_pnt(0, 0);
 vector<Point2> mouse_line;
 
+Ball b;
+
 
 
 
@@ -90,7 +92,7 @@ void Display() {
   // testing DrawBall function
   Color col = Color(1.0, 1.0, 1.0);
   Point2 pt = Point2(window_width/2, window_height/2);
-  Ball b = Ball(col, pt);
+  b = Ball(col, pt);
   b.DrawBall();
 
   // draw mouse line
@@ -110,6 +112,10 @@ void Mouse(int button, int state, int x, int y) {
   if (button == GLUT_LEFT_BUTTON) {
     if (state == GLUT_DOWN) {
       // cout << "mouse" << endl;
+      Point2 ball_current_pos = b.CurrentPos();
+      mouse_line.push_back(ball_current_pos);
+
+    } else {
       y = window_height - y;
       mouse_pnt = Point2(x, y);
       mouse_line.push_back(mouse_pnt);
@@ -123,6 +129,8 @@ void MouseMotion(int x, int y) {
   y = window_height - y;
   mouse_pnt = Point2(x, y);
   mouse_line.push_back(mouse_pnt);
+  Point2 ball_current_pos = b.CurrentPos();
+  mouse_line.push_back(ball_current_pos);
 }
 
 void Keyboard(unsigned char key, int x, int y) {
