@@ -83,13 +83,13 @@ void Display() {
   DrawPocket(window_width - edge_width,
              window_height - edge_width, pocket_size);
   DrawPocket(0 + edge_width, window_height - edge_width, pocket_size);
-  DrawPocket(window_width/2 - edge_width, 0 + edge_width, pocket_size);
-  DrawPocket(window_width/2 - edge_width,
+  DrawPocket(window_width/2 , 0 + edge_width, pocket_size);
+  DrawPocket(window_width/2 ,
              window_height - edge_width, pocket_size);
 
   // testing DrawBall function
   Color col = Color(1.0, 1.0, 1.0);
-  Point2 pt = Point2(0.0, 0.0);
+  Point2 pt = Point2(window_width/2, window_height/2);
   Ball b = Ball(col, pt);
   b.DrawBall();
 
