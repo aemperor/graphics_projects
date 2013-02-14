@@ -13,6 +13,10 @@ class Ball {
     Color colr;
     Point2 point;
     double radius;
+    double xpos;
+    double ypos;
+    double xdir;
+    double ydir;
     Ball();  // default constructor
     Ball(Color col, Point2 init);  // constructor
     void DrawBall();
