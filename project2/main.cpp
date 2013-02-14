@@ -10,7 +10,9 @@ GLint window_width = 800;
 GLint window_height = 600;
 
 Point2 mouse_pnt(0, 0);
+Point2 mouse_pnt2(0, 0);
 vector<Point2> mouse_line;
+int mouse_move;
 
 Ball b;
 
@@ -94,13 +96,14 @@ void Display() {
   Point2 pt = Point2(window_width/2, window_height/2);
   b = Ball(col, pt);
   b.DrawBall();
-
+  cout << b.CurrentPos().x << b.CurrentPos().y << endl;
+  cout << mouse_pnt2.x << mouse_pnt2.y << endl;
   // draw mouse line
-  for (int i = 0; i < mouse_line.size(); ++i) {
+
     glColor3f(1.0, 1.0, 1.0);
-    glBegin(GL_LINE_STRIP);
-    glVertex2f(mouse_line[i].x, mouse_line[i].y);
-  }
+    glBegin(GL_LINES);
+    glVertex2f(b.CurrentPos().x, b.CurrentPos().y);
+    glVertex2f(mouse_pnt2.x, mouse_pnt2.y);
   glEnd();
 
   // glutPostRedisplay();
@@ -111,26 +114,19 @@ void Display() {
 void Mouse(int button, int state, int x, int y) {
   if (button == GLUT_LEFT_BUTTON) {
     if (state == GLUT_DOWN) {
-      // cout << "mouse" << endl;
-      Point2 ball_current_pos = b.CurrentPos();
-      mouse_line.push_back(ball_current_pos);
-
+      mouse_pnt2 = Point2(x, y);
+      glutPostRedisplay();
     } else {
       y = window_height - y;
-      mouse_pnt = Point2(x, y);
-      mouse_line.push_back(mouse_pnt);
+      mouse_pnt2 = Point2(x, y);
     }
   }
-
   glutPostRedisplay();
 }
-
 void MouseMotion(int x, int y) {
   y = window_height - y;
-  mouse_pnt = Point2(x, y);
-  mouse_line.push_back(mouse_pnt);
-  Point2 ball_current_pos = b.CurrentPos();
-  mouse_line.push_back(ball_current_pos);
+  mouse_pnt2 = Point2(x, y);
+  glutPostRedisplay();
 }
 
 void Keyboard(unsigned char key, int x, int y) {
