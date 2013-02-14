@@ -39,6 +39,9 @@ void Ball::DrawBall() {
   glEnd();
 }
 
+Point2 Ball::CurrentPos() {
+  return this->point;
+}
 
 /*
   bal - ball to draw
