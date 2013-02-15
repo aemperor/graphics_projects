@@ -83,25 +83,22 @@ void Ball::Move() {
   std::cout << "inside move" << std::endl;
   float xnext;
   float ynext;
-  while (this->yvel != 0 || this->yvel != 0) {
-    std::cout << "inside while" << std::endl;
-    xnext = this->point.x + this->xvel;
-    ynext = this->point.y + this->yvel;
-    if (xnext <= 80 || xnext >= 720) {
-      this->xvel = (-1)*(this->xvel);
-    } else {
-      this->point.x = xnext;
-    }
+  std::cout << "inside while" << std::endl;
+  xnext = this->point.x + this->xvel;
+  ynext = this->point.y + this->yvel;
+  if (xnext <= 80 || xnext >= 720) {
+    this->xvel = (-1)*(this->xvel);
+  } else {
     this->point.x = xnext;
-    if (ynext <= 80 || ynext >= 520) {
-      this->yvel = (-1)*(this->yvel);
-    } else {
-      this->point.y = ynext;
-    }
-    (*this).Deaccelerate();
-    std::cout << this->xdir << std::endl;
-    glutPostRedisplay();
   }
+  this->point.x = xnext;
+  if (ynext <= 80 || ynext >= 520) {
+    this->yvel = (-1)*(this->yvel);
+  } else {
+    this->point.y = ynext;
+  }
+  (*this).Deaccelerate();
+  std::cout << this->xdir << std::endl;
 }
 
 void Ball::Hit(float* mag, float* dir) {
@@ -115,9 +112,8 @@ void Ball::Hit(float* mag, float* dir) {
   std::cout << *mag << " is magnitude " << angle << "direction" << std::endl;
   float vy = initial_velocity*sin(angle);
   float vx = initial_velocity*cos(angle);
-  this->xvel = vx;
-  this->yvel = vy;
-  (*this).Move();
+  this->xvel = (0.1)*vx;
+  this->yvel = (0.1)*vy;
 }
 /*
   bal - ball to draw

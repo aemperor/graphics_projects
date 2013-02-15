@@ -81,7 +81,6 @@ void Display() {
   }
   glEnd();
 
-  cout << "dfgh" << endl;
   int pocket_size = 30.0;
   glColor3f(0.0, 0.0, 0.0);
   DrawPocket(0 + edge_width, 0 + edge_width, pocket_size);
@@ -98,6 +97,7 @@ void Display() {
   cout << mouse_pnt2.x << mouse_pnt2.y << endl;
   // draw red ball
   r.DrawBall();
+  b.Move();
   // draw mouse line
   glColor3f(1.0, 1.0, 1.0);
   glBegin(GL_LINES);
@@ -105,7 +105,7 @@ void Display() {
   glVertex2f(mouse_pnt2.x, mouse_pnt2.y);
   glEnd();
 
-  // glutPostRedisplay();
+  glutPostRedisplay();
   glFlush();
   glutSwapBuffers();
 }
