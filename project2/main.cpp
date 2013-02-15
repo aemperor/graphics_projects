@@ -120,7 +120,7 @@ void Mouse(int button, int state, int x, int y) {
       + pow((b.CurrentPos().y - mouse_pnt2.y), 2.0));
       float dir = atan((b.CurrentPos().x - mouse_pnt2.x)
       /(b.CurrentPos().y - mouse_pnt2.y));
-      b.hit(&magnitude, &dir);
+      b.Hit(&magnitude, &dir);
     }
   }
   glutPostRedisplay();
