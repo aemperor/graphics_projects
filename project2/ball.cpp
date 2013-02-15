@@ -70,21 +70,40 @@ void Ball::MoveBall(float mag, float dir) {
 
 void Ball::Hit(float* mag, float* dir) {
   float start_time = glutGet(GLUT_ELAPSED_TIME);
-  float initial_velocity = (*mag)*.05;
+  float initial_velocity = (*mag)*.01;
   float velocity = initial_velocity;
-  float acceleration = -40;
+  float acceleration = -1;
   float angle = (*dir)*(180/3.141592);
+  float xinitial = this->point.x;
+  float yinitial = this->point.y;
   std::cout << *mag << " is magnitude " << angle << "direction" << std::endl;
   while (velocity > 0) {
-    float elapsed_time = (glutGet(GLUT_ELAPSED_TIME) - start_time)/1000;
+    float elapsed_time = (glutGet(GLUT_ELAPSED_TIME) - start_time);
     velocity = acceleration*elapsed_time + initial_velocity;
-    float vy = velocity*sin(angle);
-    float vx = velocity*cos(angle);
-    this->point.x = this->point.x + 10;
-    this->point.y = this->point.y + 10;
+    float vy = initial_velocity*sin(angle);
+    float vx = initial_velocity*cos(angle);
+    float xnext = this->point.x
+                      + (this->xdir)*(0.5)*acceleration*pow(elapsed_time, 2)
+                      + vx*elapsed_time;
+    float ynext = this->point.y
+                      + (this->ydir)*(0.5)*acceleration*pow(elapsed_time, 2)
+                      + vy*elapsed_time;
+    if (xnext <= 80 || xnext >= 720) {
+      this->xdir = (-1)*this->xdir;
+      xnext = this->point.x
+                      + (this->xdir)*(0.5)*acceleration*pow(elapsed_time, 2)
+                      + vx*elapsed_time;
+    }
+    this->point.x = xnext;
+    if (ynext <= 80 || ynext >= 520) {
+      this->xdir = (-1)*this->xdir;
+      ynext = this->point.y
+                      + (this->ydir)*(0.5)*acceleration*pow(elapsed_time, 2)
+                      + vy*elapsed_time;
+    }
+    this->point.y = ynext;
     std::cout << initial_velocity << std::endl;
     std::cout << velocity << std::endl;
-    this->DrawBall();
     glutPostRedisplay();
   }
 }
