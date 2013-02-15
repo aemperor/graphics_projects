@@ -79,7 +79,7 @@ void Ball::Deaccelerate() {
   }
 }
 
-void Ball::Move() {
+void Ball::Move(Ball other) {
   std::cout << "inside move" << std::endl;
   float xnext;
   float ynext;

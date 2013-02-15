@@ -24,7 +24,7 @@ class Ball {
     void DrawBall();
     void MoveBall(float mag, float dir);
     void Deaccelerate();
-    void Move();
+    void Move(Ball other);
     void Hit(float* mag, float* dir);
     Point2 CurrentPos();
     double GetRadius(void);
