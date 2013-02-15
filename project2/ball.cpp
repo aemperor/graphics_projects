@@ -1,5 +1,5 @@
 #include "./ball.h"
-
+// #include <iostream>
 
 // Handy ball class implementation
 /*
@@ -42,6 +42,31 @@ void Ball::DrawBall() {
 Point2 Ball::CurrentPos() {
   return this->point;
 }
+
+void Ball::MoveBall(float mag, float dir) {
+  float acc = -1 * 0.5;  // acceleration
+  float v = 50.0;
+  std::cout << "in MOVEBALL" << std::endl;
+  // Ball b = this;
+  glClear(GL_COLOR_BUFFER_BIT);
+  float start_time = glutGet(GLUT_ELAPSED_TIME);
+  std::cout << "start_time: " << start_time << std::endl;
+  float current_time, delta_t;
+
+  while (delta_t < 20) {
+      current_time = glutGet(GLUT_ELAPSED_TIME);
+      std::cout << "delta_t: " << delta_t << std::endl;
+      delta_t = (current_time - start_time) / 1000.0f;
+      this->point.x = (0.5) * acc * pow(delta_t, 2)
+                      + v * delta_t + this->point.x;
+      this->point.y = (0.5) * acc * pow(delta_t, 2)
+                      + v * delta_t + this->point.y;
+      (*this).DrawBall();
+      v = acc * delta_t + v;
+      glutPostRedisplay();
+  }
+}
+
 void Ball::Hit(float* mag, float* dir) {
 }
 /*

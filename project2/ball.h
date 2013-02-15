@@ -20,6 +20,7 @@ class Ball {
     Ball();  // default constructor
     Ball(Color col, Point2 init);  // constructor
     void DrawBall();
+    void MoveBall(float mag, float dir);
     void Hit(float* mag, float* dir);
     Point2 CurrentPos();
     double GetRadius(void);

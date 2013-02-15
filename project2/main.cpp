@@ -14,7 +14,12 @@ Point2 mouse_pnt2(0, 0);
 vector<Point2> mouse_line;
 int mouse_move;
 
-Ball b;
+Color col = Color(1.0, 1.0, 1.0);
+Point2 pt = Point2(window_width/2, window_height/2);
+Ball b = Ball(col, pt);
+Color col2 = Color(0.8f, 0.0, 0.0);
+Point2 pt2 = Point2(window_width/2 + 100, window_height/2 + 100);
+Ball r = Ball(col2, pt2);
 
 void Init() {
   glClearColor(1.0, 1.0, 1.0, 1.0);
@@ -87,20 +92,17 @@ void Display() {
   DrawPocket(window_width/2 , 0 + edge_width, pocket_size);
   DrawPocket(window_width/2 ,
              window_height - edge_width, pocket_size);
-
-  // testing DrawBall function
-  Color col = Color(1.0, 1.0, 1.0);
-  Point2 pt = Point2(window_width/2, window_height/2);
-  b = Ball(col, pt);
+  // draw white ball
   b.DrawBall();
   cout << b.CurrentPos().x << b.CurrentPos().y << endl;
   cout << mouse_pnt2.x << mouse_pnt2.y << endl;
+  // draw red ball
+  r.DrawBall();
   // draw mouse line
-
-    glColor3f(1.0, 1.0, 1.0);
-    glBegin(GL_LINES);
-    glVertex2f(b.CurrentPos().x, b.CurrentPos().y);
-    glVertex2f(mouse_pnt2.x, mouse_pnt2.y);
+  glColor3f(1.0, 1.0, 1.0);
+  glBegin(GL_LINES);
+  glVertex2f(b.CurrentPos().x, b.CurrentPos().y);
+  glVertex2f(mouse_pnt2.x, mouse_pnt2.y);
   glEnd();
 
   // glutPostRedisplay();
@@ -120,7 +122,10 @@ void Mouse(int button, int state, int x, int y) {
       + pow((b.CurrentPos().y - mouse_pnt2.y), 2.0));
       float dir = atan((b.CurrentPos().x - mouse_pnt2.x)
       /(b.CurrentPos().y - mouse_pnt2.y));
-      b.Hit(&magnitude, &dir);
+      // b.Hit(&magnitude, &dir);
+      cout << "calling MoveBall" << endl;
+      cout << "direction: " << dir << endl;
+      b.MoveBall(magnitude, dir);
     }
   }
   glutPostRedisplay();
@@ -140,6 +145,9 @@ void Keyboard(unsigned char key, int x, int y) {
 }
 
 
+// void Idle() {
+// }
+
 
 int main(int argc, char** argv) {
   cout << "Billiards!" << endl;
@@ -152,6 +160,7 @@ int main(int argc, char** argv) {
   glutKeyboardFunc(Keyboard);
   glutMouseFunc(Mouse);
   glutMotionFunc(MouseMotion);
+  // glutIdleFunc(Idle);
   Init();
   glutMainLoop();
 }
