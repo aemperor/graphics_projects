@@ -120,12 +120,15 @@ void Mouse(int button, int state, int x, int y) {
       mouse_pnt2 = Point2(x, y);
       float magnitude = sqrt(pow((b.CurrentPos().x - mouse_pnt2.x), 2.0)
       + pow((b.CurrentPos().y - mouse_pnt2.y), 2.0));
-      float dir = atan((b.CurrentPos().x - mouse_pnt2.x)
-      /(b.CurrentPos().y - mouse_pnt2.y));
+      // float dir = atan((b.CurrentPos().x - mouse_pnt2.x)
+      // /(b.CurrentPos().y - mouse_pnt2.y));
       // b.Hit(&magnitude, &dir);
-      cout << "calling MoveBall" << endl;
-      cout << "direction: " << dir << endl;
-      b.MoveBall(magnitude, dir);
+      float dir = atan((b.CurrentPos().y - mouse_pnt2.y)
+      /(b.CurrentPos().x - mouse_pnt2.x));
+      b.Hit(&magnitude, &dir);
+      // cout << "calling MoveBall" << endl;
+      // cout << "direction: " << dir << endl;
+      // b.MoveBall(magnitude, dir);
     }
   }
   glutPostRedisplay();
