@@ -1,3 +1,4 @@
+#include <time.h>
 #include "./ball.h"
 
 
@@ -42,7 +43,26 @@ void Ball::DrawBall() {
 Point2 Ball::CurrentPos() {
   return this->point;
 }
+
 void Ball::Hit(float* mag, float* dir) {
+  float start_time = glutGet(GLUT_ELAPSED_TIME);
+  float initial_velocity = (*mag)*.05;
+  float velocity = initial_velocity;
+  float acceleration = -40;
+  float angle = (*dir)*(180/3.141592);
+  std::cout << *mag << " is magnitude " << angle << "direction" << std::endl;
+  while (velocity > 0) {
+    float elapsed_time = (glutGet(GLUT_ELAPSED_TIME) - start_time)/1000;
+    velocity = acceleration*elapsed_time + initial_velocity;
+    float vy = velocity*sin(angle);
+    float vx = velocity*cos(angle);
+    this->point.x = this->point.x + 10;
+    this->point.y = this->point.y + 10;
+    std::cout << initial_velocity << std::endl;
+    std::cout << velocity << std::endl;
+    this->DrawBall();
+    glutPostRedisplay();
+  }
 }
 /*
   bal - ball to draw
