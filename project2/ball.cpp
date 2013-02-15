@@ -1,4 +1,5 @@
 #include <time.h>
+#include <vector>
 #include "./ball.h"
 // #include <iostream>
 
@@ -21,8 +22,8 @@ Ball::Ball(Color col, Point2 init) {  // constructor
   radius = 30.0;
 }
 
-void Ball::DrawBall() {
-  Point2 pt = this->point;
+void Ball::DrawBall(Point2 current) {
+  Point2 pt = current;
   float x, y, x2, y2;
   x = pt.x;
   y = pt.y;
@@ -44,31 +45,7 @@ Point2 Ball::CurrentPos() {
   return this->point;
 }
 
-void Ball::MoveBall(float mag, float dir) {
-  float acc = -1 * 0.5;  // acceleration
-  float v = 50.0;
-  std::cout << "in MOVEBALL" << std::endl;
-  // Ball b = this;
-  glClear(GL_COLOR_BUFFER_BIT);
-  float start_time = glutGet(GLUT_ELAPSED_TIME);
-  std::cout << "start_time: " << start_time << std::endl;
-  float current_time, delta_t;
-
-  while (delta_t < 20) {
-      current_time = glutGet(GLUT_ELAPSED_TIME);
-      std::cout << "delta_t: " << delta_t << std::endl;
-      delta_t = (current_time - start_time) / 1000.0f;
-      this->point.x = (0.5) * acc * pow(delta_t, 2)
-                      + v * delta_t + this->point.x;
-      this->point.y = (0.5) * acc * pow(delta_t, 2)
-                      + v * delta_t + this->point.y;
-      (*this).DrawBall();
-      v = acc * delta_t + v;
-      glutPostRedisplay();
-  }
-}
-
-void Ball::Hit(float* mag, float* dir) {
+std::vector<Point2> Ball::Hit(float* mag, float* dir) {
   float start_time = glutGet(GLUT_ELAPSED_TIME);
   float initial_velocity = (*mag)*.01;
   float velocity = initial_velocity;
@@ -76,6 +53,7 @@ void Ball::Hit(float* mag, float* dir) {
   float angle = (*dir)*(180/3.141592);
   float xinitial = this->point.x;
   float yinitial = this->point.y;
+  std::vector<Point2> res;
   std::cout << *mag << " is magnitude " << angle << "direction" << std::endl;
   while (velocity > 0) {
     float elapsed_time = (glutGet(GLUT_ELAPSED_TIME) - start_time);
@@ -102,10 +80,12 @@ void Ball::Hit(float* mag, float* dir) {
                       + vy*elapsed_time;
     }
     this->point.y = ynext;
+    res.push_back(this->point);
     std::cout << initial_velocity << std::endl;
     std::cout << velocity << std::endl;
     glutPostRedisplay();
   }
+  return res;
 }
 /*
   bal - ball to draw

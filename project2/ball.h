@@ -19,9 +19,9 @@ class Ball {
     double ydir;
     Ball();  // default constructor
     Ball(Color col, Point2 init);  // constructor
-    void DrawBall();
+    std::vector<Point2> Hit(float* mag, float* dir);
+    void DrawBall(Point2 current);
     void MoveBall(float mag, float dir);
-    void Hit(float* mag, float* dir);
     Point2 CurrentPos();
     double GetRadius(void);
 };
