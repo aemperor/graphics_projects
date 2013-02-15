@@ -16,9 +16,6 @@ int mouse_move;
 
 Ball b;
 
-
-
-
 void Init() {
   glClearColor(1.0, 1.0, 1.0, 1.0);
   glColor3f(1.0, 0.0, 0.0);
@@ -119,6 +116,11 @@ void Mouse(int button, int state, int x, int y) {
     } else {
       y = window_height - y;
       mouse_pnt2 = Point2(x, y);
+      float magnitude = sqrt(pow((b.CurrentPos().x - mouse_pnt2.x), 2.0)
+      + pow((b.CurrentPos().y - mouse_pnt2.y), 2.0));
+      float dir = atan((b.CurrentPos().x - mouse_pnt2.x)
+      /(b.CurrentPos().y - mouse_pnt2.y));
+      b.hit(&magnitude, &dir);
     }
   }
   glutPostRedisplay();

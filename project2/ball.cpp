@@ -42,7 +42,8 @@ void Ball::DrawBall() {
 Point2 Ball::CurrentPos() {
   return this->point;
 }
-
+void hit(float* mag, float* dir) {
+}
 /*
   bal - ball to draw
   k - translation on y axis
