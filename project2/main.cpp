@@ -84,7 +84,7 @@ void Display() {
   }
   glEnd();
 
-
+  cout << "dfgh" << endl;
   int pocket_size = 30.0;
   glColor3f(0.0, 0.0, 0.0);
   DrawPocket(0 + edge_width, 0 + edge_width, pocket_size);
@@ -98,8 +98,6 @@ void Display() {
   // draw white ball
   b.DrawBall(b.CurrentPos());
   for (iter; iter < movement.size(); ++iter) {
-        // b.point.x = movement[iter].x;
-        // b.point.y = movement[iter].y;
         b.DrawBall(movement[iter]);
       }
 
@@ -124,16 +122,12 @@ void Mouse(int button, int state, int x, int y) {
   if (button == GLUT_LEFT_BUTTON) {
     if (state == GLUT_DOWN) {
       mouse_pnt2 = Point2(x, y);
-      // movement.push_back(mouse_pnt2);
       glutPostRedisplay();
     } else {
       y = window_height - y;
       mouse_pnt2 = Point2(x, y);
       float magnitude = sqrt(pow((b.CurrentPos().x - mouse_pnt2.x), 2.0)
       + pow((b.CurrentPos().y - mouse_pnt2.y), 2.0));
-      // float dir = atan((b.CurrentPos().x - mouse_pnt2.x)
-      // /(b.CurrentPos().y - mouse_pnt2.y));
-      // b.Hit(&magnitude, &dir);
       float dir = atan((b.CurrentPos().y - mouse_pnt2.y)
       /(b.CurrentPos().x - mouse_pnt2.x));
       vector<Point2> ret = b.Hit(&magnitude, &dir);
@@ -141,9 +135,17 @@ void Mouse(int button, int state, int x, int y) {
       for (int i = 0; i < ret.size(); ++i) {
         movement.push_back(ret[i]);
       }
-      // cout << "calling MoveBall" << endl;
-      // cout << "direction: " << dir << endl;
-      // b.MoveBall(magnitude, dir);
+      dir = atan2((b.CurrentPos().y - mouse_pnt2.y),
+      (b.CurrentPos().x - mouse_pnt2.x));
+      if (b.CurrentPos().x <= mouse_pnt2.x)
+        b.xdir = -1;
+      else
+        b.xdir = 1;
+      if (b.CurrentPos().y <= mouse_pnt2.y)
+        b.ydir = -1;
+      else
+        b.ydir = 1;
+      b.Hit(&magnitude, &dir);
     }
   }
   glutPostRedisplay();
