@@ -68,44 +68,56 @@ void Ball::MoveBall(float mag, float dir) {
   }
 }
 
-void Ball::Hit(float* mag, float* dir) {
-  float start_time = glutGet(GLUT_ELAPSED_TIME);
-  float initial_velocity = (*mag)*.01;
-  float velocity = initial_velocity;
-  float acceleration = -1;
-  float angle = (*dir)*(180/3.141592);
-  float xinitial = this->point.x;
-  float yinitial = this->point.y;
-  std::cout << *mag << " is magnitude " << angle << "direction" << std::endl;
-  while (velocity > 0) {
-    float elapsed_time = (glutGet(GLUT_ELAPSED_TIME) - start_time);
-    velocity = acceleration*elapsed_time + initial_velocity;
-    float vy = initial_velocity*sin(angle);
-    float vx = initial_velocity*cos(angle);
-    float xnext = this->point.x
-                      + (this->xdir)*(0.5)*acceleration*pow(elapsed_time, 2)
-                      + vx*elapsed_time;
-    float ynext = this->point.y
-                      + (this->ydir)*(0.5)*acceleration*pow(elapsed_time, 2)
-                      + vy*elapsed_time;
+void Ball::Deaccelerate() {
+  this->xvel /= 1.001;
+  this->yvel /= 1.001;
+  if (abs(this->xvel) <= .0001) {
+    this->xvel = 0;
+  }
+  if (abs(this->yvel) <= .0001) {
+    this->yvel = 0;
+  }
+}
+
+void Ball::Move() {
+  std::cout << "inside move" << std::endl;
+  float xnext;
+  float ynext;
+  while (this->yvel != 0 || this->yvel != 0) {
+    std::cout << "inside while" << std::endl;
+    xnext = this->point.x + this->xvel;
+    ynext = this->point.y + this->yvel;
     if (xnext <= 80 || xnext >= 720) {
-      this->xdir = (-1)*this->xdir;
-      xnext = this->point.x
-                      + (this->xdir)*(0.5)*acceleration*pow(elapsed_time, 2)
-                      + vx*elapsed_time;
+      this->xvel = (-1)*(this->xvel);
+    } else {
+      this->point.x = xnext;
     }
     this->point.x = xnext;
     if (ynext <= 80 || ynext >= 520) {
-      this->xdir = (-1)*this->xdir;
-      ynext = this->point.y
-                      + (this->ydir)*(0.5)*acceleration*pow(elapsed_time, 2)
-                      + vy*elapsed_time;
+      this->yvel = (-1)*(this->yvel);
+    } else {
+      this->point.y = ynext;
     }
-    this->point.y = ynext;
-    std::cout << initial_velocity << std::endl;
-    std::cout << velocity << std::endl;
+    (*this).Deaccelerate();
+    std::cout << this->xdir << std::endl;
     glutPostRedisplay();
   }
+}
+
+void Ball::Hit(float* mag, float* dir) {
+  float start_time = glutGet(GLUT_ELAPSED_TIME);
+  float initial_velocity = (*mag)*.1;
+  float velocity = initial_velocity;
+  float acceleration = -.1;
+  float angle = (*dir);
+  float xinitial = this->point.x;
+  float yinitial = this->point.y;
+  std::cout << *mag << " is magnitude " << angle << "direction" << std::endl;
+  float vy = initial_velocity*sin(angle);
+  float vx = initial_velocity*cos(angle);
+  this->xvel = vx;
+  this->yvel = vy;
+  (*this).Move();
 }
 /*
   bal - ball to draw

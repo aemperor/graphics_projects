@@ -81,7 +81,7 @@ void Display() {
   }
   glEnd();
 
-
+  cout << "dfgh" << endl;
   int pocket_size = 30.0;
   glColor3f(0.0, 0.0, 0.0);
   DrawPocket(0 + edge_width, 0 + edge_width, pocket_size);
@@ -123,8 +123,16 @@ void Mouse(int button, int state, int x, int y) {
       // float dir = atan((b.CurrentPos().x - mouse_pnt2.x)
       // /(b.CurrentPos().y - mouse_pnt2.y));
       // b.Hit(&magnitude, &dir);
-      float dir = atan((b.CurrentPos().y - mouse_pnt2.y)
-      /(b.CurrentPos().x - mouse_pnt2.x));
+      float dir = atan2((b.CurrentPos().y - mouse_pnt2.y),
+      (b.CurrentPos().x - mouse_pnt2.x));
+      if (b.CurrentPos().x <= mouse_pnt2.x)
+        b.xdir = -1;
+      else
+        b.xdir = 1;
+      if (b.CurrentPos().y <= mouse_pnt2.y)
+        b.ydir = -1;
+      else
+        b.ydir = 1;
       b.Hit(&magnitude, &dir);
       // cout << "calling MoveBall" << endl;
       // cout << "direction: " << dir << endl;

@@ -17,10 +17,14 @@ class Ball {
     double ypos;
     double xdir;
     double ydir;
+    float xvel;
+    float yvel;
     Ball();  // default constructor
     Ball(Color col, Point2 init);  // constructor
     void DrawBall();
     void MoveBall(float mag, float dir);
+    void Deaccelerate();
+    void Move();
     void Hit(float* mag, float* dir);
     Point2 CurrentPos();
     double GetRadius(void);
