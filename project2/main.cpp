@@ -84,7 +84,6 @@ void Display() {
   }
   glEnd();
 
-  cout << "dfgh" << endl;
   int pocket_size = 30.0;
   glColor3f(0.0, 0.0, 0.0);
   DrawPocket(0 + edge_width, 0 + edge_width, pocket_size);
@@ -106,6 +105,8 @@ void Display() {
 
   // draw red ball
   r.DrawBall(r.CurrentPos());
+  r.DrawBall();
+  b.Move();
   // draw mouse line
   glColor3f(1.0, 1.0, 1.0);
   glBegin(GL_LINES);
@@ -178,7 +179,6 @@ int main(int argc, char** argv) {
   cout << "Billiards!" << endl;
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-  // glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
   glutInitWindowSize(window_width, window_height);
   glutInitWindowPosition(0, 0);
   glutCreateWindow("Billiards");

@@ -83,6 +83,28 @@ std::vector<Point2> Ball::Move() {
     glutPostRedisplay();
   }
   return res;
+ } 
+ 
+void Ball::Move(Ball other) {
+  std::cout << "inside move" << std::endl;
+  float xnext;
+  float ynext;
+  std::cout << "inside while" << std::endl;
+  xnext = this->point.x + this->xvel;
+  ynext = this->point.y + this->yvel;
+  if (xnext <= 80 || xnext >= 720) {
+    this->xvel = (-1)*(this->xvel);
+  } else {
+    this->point.x = xnext;
+  }
+  this->point.x = xnext;
+  if (ynext <= 80 || ynext >= 520) {
+    this->yvel = (-1)*(this->yvel);
+  } else {
+    this->point.y = ynext;
+  }
+  (*this).Deaccelerate();
+  std::cout << this->xdir << std::endl;
 }
 
 std::vector<Point2> Ball::Hit(float* mag, float* dir) {
@@ -96,7 +118,8 @@ std::vector<Point2> Ball::Hit(float* mag, float* dir) {
   // std::cout << *mag << " is magnitude " << angle << "direction" << std::endl;
   float vy = initial_velocity*sin(angle);
   float vx = initial_velocity*cos(angle);
-  this->xvel = vx;
   this->yvel = vy;
   return (*this).Move();
+  this->xvel = (0.1)*vx;
+  this->yvel = (0.1)*vy;
 }

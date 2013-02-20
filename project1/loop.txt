@@ -1,0 +1,67 @@
+color 3
+up
+forward 20
+right 90
+forward 50
+loop 40 {
+  up
+  forward 10
+  color 1
+  down
+  loop 4 {
+    forward 15
+    color 3
+    right 90
+  }
+  up
+  right 180
+  forward 10
+  right 180
+  right 9
+}
+
+
+up
+origin
+left 270
+color 0
+forward 30
+right 270
+forward 50
+loop 70 {
+  up
+  forward 15
+  color 1
+  down
+  loop 4 {
+    forward 5
+    color 3
+    right 90
+  }
+  up
+  right 180
+  forward 10
+  right 180
+  right 9
+}
+
+up
+color 0
+forward 10
+down
+loop 80 {
+  up
+  forward 18
+  color 1
+  down
+  loop 4 {
+    forward 10
+    color 3
+    right 90
+  }
+  up
+  right 180
+  forward 10
+  right 180
+  right 9
+}

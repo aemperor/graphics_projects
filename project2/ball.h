@@ -25,6 +25,8 @@ class Ball {
     void DrawBall(Point2 current);
     void Deaccelerate();
     std::vector<Point2> Move();
+    void Move(Ball other);
+    void Hit(float* mag, float* dir);
     Point2 CurrentPos();
     double GetRadius(void);
 };
