@@ -238,19 +238,14 @@ void Display() {
   glLineWidth(50.0f);
   int count = 0;
   // TODO: draw scene graph and animate
-  for (int i = 0; i < sg.listOfBodyParts.size(); ++i) {
-    for (int j = 0; j < sg.listOfBodyParts[i].size(); ++j) {
-      glBegin(GL_LINES);
-      glVertex3f(sg.listOfBodyParts[i][j].x,
-                 sg.listOfBodyParts[i][j].y,
-                 sg.listOfBodyParts[i][j].z);
-      // DrawJoint(sg.listOfBodyParts[i][j].x,
-      //           sg.listOfBodyParts[i][j].y,
-      //           sg.listOfBodyParts[i][j].z);
-      cout << "joints = " << ++count << endl;
-    }
-    glEnd();
+  for (int i = 0; i < sg.listOfJoints.size(); ++i) {
+    glBegin(GL_LINES);
+    glVertex3f(sg.listOfJoints[i].x,
+               sg.listOfJoints[i].y,
+               sg.listOfJoints[i].z);
+    cout << "joints = " << ++count << endl;
   }
+  glEnd();
 
   if (showAxis) DrawAxis();
   if (showBounds) DrawBounds();

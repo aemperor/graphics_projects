@@ -26,19 +26,19 @@ class SceneGraph {
   void SetFrameSize(uint32_t size);
   void AddFrame(float * data);
   void SetCurrentFrame(uint32_t frameNumber);
+  void Resize(uint32_t id);
 
   struct Joint3 {
+    Joint3() {}
     Joint3(const char * name, uint32_t id) {}
     float x, y, z;
     uint32_t id;
     const char * name;
-    uint32_t childId;
+    vector<uint32_t> childIds;
     uint16_t channel;
   };
   // holder for joints while being parsed
   vector<Joint3> listOfJoints;
-  // list of full body parts i.e. vectors of joints
-  vector<vector<Joint3> > listOfBodyParts;
 };
 
 
