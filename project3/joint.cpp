@@ -57,16 +57,18 @@ void SceneGraph::SetNumChannels(uint32_t id, uint16_t num) {
   cout << "setNumChannels:id=" << id << " num=" << num << endl;
   // TODO
   // right now all this does is set the number of channels in each joint
-  if (listOfJoints.size() > 0) {
-    if (num < 6) {
-      for (int i = 0; i < listOfJoints.size(); ++i) {
-        if (listOfJoints[i].id == id)
-          listOfJoints[i].channel = num;
-        }
-      } else {  // this is root case
-      for (int i = 0; i < listOfJoints.size(); ++i) {
-        if (listOfJoints[i].id == id)
-          listOfJoints[i].channel = num;
+  if (num < 6) {
+    for (int i = 0; i < listOfBodyParts.size(); ++i) {
+      for (int j = 0; j < listOfBodyParts[i].size(); ++j) {
+        if (listOfBodyParts[i][j].id == id)
+          listOfBodyParts[i][j].channel = num;
+      }
+    }
+  } else {  // this is root case
+    for (int i = 0; i < listOfBodyParts.size(); ++i) {
+      for (int j = 0; j < listOfBodyParts[i].size(); ++j) {
+        if (listOfBodyParts[i][j].id == id)
+          listOfBodyParts[i][j].channel = num;
       }
     }
   }

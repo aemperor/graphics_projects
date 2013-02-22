@@ -35,7 +35,9 @@ class SceneGraph {
     uint32_t childId;
     uint16_t channel;
   };
+  // holder for joints while being parsed
   vector<Joint3> listOfJoints;
+  // list of full body parts i.e. vectors of joints
   vector<vector<Joint3> > listOfBodyParts;
 };
 
