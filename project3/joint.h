@@ -26,6 +26,17 @@ class SceneGraph {
   void SetFrameSize(uint32_t size);
   void AddFrame(float * data);
   void SetCurrentFrame(uint32_t frameNumber);
+
+  struct Joint3 {
+    Joint3(const char * name, uint32_t id) {}
+    float x, y, z;
+    uint32_t id;
+    const char * name;
+    uint32_t childId;
+    uint16_t channel;
+  };
+  vector<Joint3> listOfJoints;
+  vector<vector<Joint3> > listOfBodyParts;
 };
 
 

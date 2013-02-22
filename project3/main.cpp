@@ -196,6 +196,33 @@ void DrawBounds() {
   }
 }
 
+void RotateLeft() {  // TODO
+  glRotatef(90, 0, 1, 0);
+}
+
+void RotateRight() {  // TODO
+}
+
+void ZoomIn() {  // TODO
+}
+
+void ZoomOut() {  // TODO
+}
+
+void DrawJoint(GLfloat x, GLfloat y, GLfloat z) {
+  GLfloat x2, y2, z2;
+  z2 = 0.0f;
+  GLfloat radius = 5.0f;
+  glBegin(GL_TRIANGLE_FAN);
+  glVertex3f(x, y, z);
+  for (GLfloat angle = 1.0f; angle < 361.0f; angle += 0.2) {
+    x2 = x+sin(angle)*radius;
+    y2 = y+cos(angle)*radius;
+    glVertex3f(x2, y2, z2);
+  }
+  glEnd();
+}
+
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -207,8 +234,23 @@ void Display() {
   SetCamera();
   SetDrawMode();
   DrawFloor(800, 800, 80, 80);
-
+  glColor3f(0.0f, 0.0f, 0.0f);
+  glLineWidth(50.0f);
+  int count = 0;
   // TODO: draw scene graph and animate
+  for (int i = 0; i < sg.listOfBodyParts.size(); ++i) {
+    for (int j = 0; j < sg.listOfBodyParts[i].size(); ++j) {
+      glBegin(GL_LINES);
+      glVertex3f(sg.listOfBodyParts[i][j].x,
+                 sg.listOfBodyParts[i][j].y,
+                 sg.listOfBodyParts[i][j].z);
+      // DrawJoint(sg.listOfBodyParts[i][j].x,
+      //           sg.listOfBodyParts[i][j].y,
+      //           sg.listOfBodyParts[i][j].z);
+      cout << "joints = " << ++count << endl;
+    }
+    glEnd();
+  }
 
   if (showAxis) DrawAxis();
   if (showBounds) DrawBounds();
@@ -263,25 +305,30 @@ void Keyboard(unsigned char key, int x, int y) {
     case 'z':
       // TODO
       cout << "Zoom in" << endl;
+      ZoomIn();
       ComputeLookAt();
       break;
     case 'Z':
       // TODO
       cout << "Zoom out" << endl;
+      ZoomOut();
       ComputeLookAt();
       break;
     case 'j':
       // TODO
       cout << "Orbit left" << endl;
+      // glPushMatrix();
+      RotateLeft();
       ComputeLookAt();
       break;
     case 'k':
       // TODO
       cout << "Orbit right" << endl;
+      RotateRight();
       ComputeLookAt();
       break;
     case ' ':
-      // TODO
+      // TODO -- figure out frames first
       cout << "Start/stop animation" << endl;
       break;
     case 'a':
