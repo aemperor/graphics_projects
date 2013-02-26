@@ -14,6 +14,7 @@
 #include <sstream>
 #include <cstdio>
 #include <cstring>
+#include <vector>
 
 #include "./common.h"
 
@@ -223,6 +224,48 @@ void DrawJoint(GLfloat x, GLfloat y, GLfloat z) {
   glEnd();
 }
 
+void RotateAxes(SceneGraph::Joint3 v) {
+  int j = 0;
+  while (v.ordr[j++] != -1) {
+    switch (v.ordr[j]) {
+      case 5:
+        glRotatef(BVH_ZROT_IDX, BVH_XPOS_IDX, BVH_YPOS_IDX, BVH_ZPOS_IDX);
+        break;
+      case 4:
+        glRotatef(BVH_YROT_IDX, BVH_XPOS_IDX, BVH_YPOS_IDX, BVH_ZPOS_IDX);
+        break;
+      case 3:
+        glRotatef(BVH_XROT_IDX, BVH_XPOS_IDX, BVH_YPOS_IDX, BVH_ZPOS_IDX);
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+void ChildCase(SceneGraph::Joint3 j) {
+  if (j.childIds.size() == 0) {
+    return;
+  } else {
+    int child;
+    for (int i = 0; i < j.childIds.size(); ++i) {
+      child = j.childIds[i];
+      if (!sg.listOfJoints[child].childIds.empty()) {
+        ChildCase(sg.listOfJoints[child]);
+      } else {
+        glPushMatrix();
+        RotateAxes(j);
+        glBegin(GL_LINES);
+        glVertex3f(sg.listOfJoints[child].x,
+                   sg.listOfJoints[child].y,
+                   sg.listOfJoints[child].z);
+        glEnd();
+        glPopMatrix();
+      }
+    }
+  }
+}
+
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -235,17 +278,30 @@ void Display() {
   SetDrawMode();
   DrawFloor(800, 800, 80, 80);
   glColor3f(0.0f, 0.0f, 0.0f);
-  glLineWidth(50.0f);
+  glLineWidth(5.0f);
   int count = 0;
   // TODO: draw scene graph and animate
+  cout << "LOJ size: " << sg.listOfJoints.size() << endl;
   for (int i = 0; i < sg.listOfJoints.size(); ++i) {
-    glBegin(GL_LINES);
-    glVertex3f(sg.listOfJoints[i].x,
-               sg.listOfJoints[i].y,
-               sg.listOfJoints[i].z);
+    // glBegin(GL_LINES);
+    // glVertex3f(sg.listOfJoints[i].x,
+    //            sg.listOfJoints[i].y,
+    //            sg.listOfJoints[i].z);
+    if (sg.listOfJoints[i].isChild == 0) {
+      RotateAxes(sg.listOfJoints[i]);
+    } else {  // has children case
+        ChildCase(sg.listOfJoints[i]);
+    }
+    // DrawJoint(sg.listOfJoints[i].x,
+    //            sg.listOfJoints[i].y,
+    //            sg.listOfJoints[i].z);
+    // glBegin(GL_LINES);
+    // glVertex3f(sg.listOfJoints[i].x,
+    //            sg.listOfJoints[i].y,
+    //            sg.listOfJoints[i].z);
     cout << "joints = " << ++count << endl;
   }
-  glEnd();
+  // glEnd();
 
   if (showAxis) DrawAxis();
   if (showBounds) DrawBounds();

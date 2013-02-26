@@ -11,6 +11,7 @@ void SceneGraph::CreateRoot(const char * name, uint32_t id) {
   // TODO
   // special case for root -- does not need Resize()
   listOfJoints.push_back(Joint3(name, id));
+  listOfJoints[id].type = 0;
 }
 
 void SceneGraph::CreateJoint(const char * name, uint32_t id) {
@@ -19,6 +20,8 @@ void SceneGraph::CreateJoint(const char * name, uint32_t id) {
   if (listOfJoints.size() <= id)
     Resize(id);
   listOfJoints[id] = Joint3(name, id);
+  listOfJoints[id].isChild = 0;
+  listOfJoints[id].type = 1;
 }
 
 void SceneGraph::CreateEndSite(const char * name, uint32_t id) {
@@ -27,12 +30,14 @@ void SceneGraph::CreateEndSite(const char * name, uint32_t id) {
   if (listOfJoints.size() <= id)
     Resize(id);
   listOfJoints[id] = Joint3(name, id);
+  listOfJoints[id].type = 2;
 }
 
 void SceneGraph::SetChild(uint32_t parent, uint32_t child) {
   cout << "setChild:parent=" << parent << " child=" << child << endl;
   // TODO
   listOfJoints[parent].childIds.push_back(child);
+  listOfJoints[child].isChild = 1;
 }
 
 void SceneGraph::SetOffset(uint32_t id, float * offset) {
@@ -58,12 +63,17 @@ void SceneGraph::SetChannelFlags(uint32_t id, uint16_t flags) {
 
 void SceneGraph::SetChannelOrder(uint32_t id, int * order) {
   cout  << "setChannelOrder:id=" << id << endl;
+  for (int i = 0; i < 6; i++) {
+    cout << "order[]" << order[i] << endl;
+    listOfJoints[id].ordr[i] = order[i];
+  }
   // TODO
 }
 
 void SceneGraph::SetFrameIndex(uint32_t id, uint32_t index) {
   cout << "setFrameIndex:id=" << id << " index=" << index << endl;
   // TODO
+  // listOfJoints[id].frameIdx = index;
 }
 
 void SceneGraph::SetFrameTime(float delta) {
@@ -83,6 +93,14 @@ void SceneGraph::SetFrameSize(uint32_t size) {
 
 void SceneGraph::AddFrame(float * data) {
   cout << "addFrame" << endl;
+  Frame f = Frame();
+  int i = 0;
+  while (data[i] != NULL) {
+    cout << "data: " << data[i] <<endl;
+    f.dataF.push_back(data[i]);
+    i++;
+  }
+  frames.push_back(f);
   // TODO
 }
 

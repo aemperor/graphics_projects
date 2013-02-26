@@ -31,14 +31,28 @@ class SceneGraph {
   struct Joint3 {
     Joint3() {}
     Joint3(const char * name, uint32_t id) {}
-    float x, y, z;
+    int type;  // 0 = root, 1 = joint, 2 = endsite
+    float x, y, z;  // offset
     uint32_t id;
     const char * name;
     vector<uint32_t> childIds;
     uint16_t channel;
+    int ordr[6];
+    int isChild;
+    // uint32_t frameIdx;
   };
   // holder for joints while being parsed
   vector<Joint3> listOfJoints;
+
+  struct Frame {
+    Frame() {}
+    uint32_t idx;
+    float time;
+    uint32_t size;
+    vector<float> dataF;
+  };
+
+  vector<Frame> frames;
 };
 
 
