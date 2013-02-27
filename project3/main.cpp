@@ -278,17 +278,18 @@ void Display() {
   cout << "LOJ size: " << sg.listOfJoints.size() << endl;
   int dataPos = 0;  // want this to be static
   int k = 0;        // extra variable for various uses
-  for (int i = 0; i < sg.frames.size(); ++i) {
+  for (int i = 0; i < sg.frames.size()-1; ++i) {
     for (int j = 0; j < sg.listOfJoints.size(); ++j) {
       cout << "j: " << j;
       cout << " -- HERE1" << endl;
       if (j == 0) {  // root case
         cout << "HERE2" << endl;
-        for (k = 0; k < sg.listOfJoints[i].channel; k++) {
+        for (k = 0; k < sg.listOfJoints[j].channel; k++) {
+          cout << "HERE4" << k << endl;
           sg.listOfJoints[j].posRot.push_back(sg.frames[i].data[dataPos]);
+          cout << "HERE5" << k << endl;
           dataPos++;
         }  // now plot it
-        cout << "HERE3" << endl;
         DrawJoint(sg.listOfJoints[j].posRot[0],
                   sg.listOfJoints[j].posRot[1],
                   sg.listOfJoints[j].posRot[2]);
@@ -331,7 +332,7 @@ void Display() {
   //   cout << "joints = " << ++count << endl;
   // }
   // glEnd();
-
+  cout << "HERE5" << endl;
   if (showAxis) DrawAxis();
   if (showBounds) DrawBounds();
 
