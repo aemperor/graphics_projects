@@ -32,7 +32,10 @@ class SceneGraph {
     Joint3() {}
     Joint3(const char * name, uint32_t id) {}
     int type;  // 0 = root, 1 = joint, 2 = endsite
-    float x, y, z;  // offset
+    vector<float> posRot;  // position/rotation vector to replace pos/rot
+    // float x, y, z;  // position
+    float xoff, yoff, zoff;  // offset
+    // float xrot, yrot, zrot;  // rotation
     uint32_t id;
     const char * name;
     vector<uint32_t> childIds;
@@ -46,12 +49,13 @@ class SceneGraph {
 
   struct Frame {
     Frame() {}
-    uint32_t idx;
-    float time;
-    uint32_t size;
-    vector<float> dataF;
+    vector<float> data;
+    uint32_t numFrames;
+    uint32_t frameIdx;
   };
 
+  float frameTime;
+  uint32_t frameSize;
   vector<Frame> frames;
 };
 

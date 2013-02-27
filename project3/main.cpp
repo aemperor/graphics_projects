@@ -210,18 +210,14 @@ void ZoomIn() {  // TODO
 void ZoomOut() {  // TODO
 }
 
-void DrawJoint(GLfloat x, GLfloat y, GLfloat z) {
-  GLfloat x2, y2, z2;
-  z2 = 0.0f;
-  GLfloat radius = 5.0f;
-  glBegin(GL_TRIANGLE_FAN);
-  glVertex3f(x, y, z);
-  for (GLfloat angle = 1.0f; angle < 361.0f; angle += 0.2) {
-    x2 = x+sin(angle)*radius;
-    y2 = y+cos(angle)*radius;
-    glVertex3f(x2, y2, z2);
-  }
-  glEnd();
+void DrawJoint(float x, float y, float z) {
+  glPushMatrix();
+  glTranslatef(x, y, z);
+  glutSolidSphere(2, 10, 10);
+  glPopMatrix();
+}
+
+void DrawSolidLine() {
 }
 
 void RotateAxes(SceneGraph::Joint3 v) {
@@ -255,11 +251,9 @@ void ChildCase(SceneGraph::Joint3 j) {
       } else {
         glPushMatrix();
         RotateAxes(j);
-        glBegin(GL_LINES);
-        glVertex3f(sg.listOfJoints[child].x,
-                   sg.listOfJoints[child].y,
-                   sg.listOfJoints[child].z);
-        glEnd();
+        // glVertex3f(sg.listOfJoints[child].x,
+        //            sg.listOfJoints[child].y,
+        //            sg.listOfJoints[child].z);
         glPopMatrix();
       }
     }
@@ -282,25 +276,60 @@ void Display() {
   int count = 0;
   // TODO: draw scene graph and animate
   cout << "LOJ size: " << sg.listOfJoints.size() << endl;
-  for (int i = 0; i < sg.listOfJoints.size(); ++i) {
-    // glBegin(GL_LINES);
-    // glVertex3f(sg.listOfJoints[i].x,
-    //            sg.listOfJoints[i].y,
-    //            sg.listOfJoints[i].z);
-    if (sg.listOfJoints[i].isChild == 0) {
-      RotateAxes(sg.listOfJoints[i]);
-    } else {  // has children case
-        ChildCase(sg.listOfJoints[i]);
+  int dataPos = 0;  // want this to be static
+  int k = 0;        // extra variable for various uses
+  for (int i = 0; i < sg.frames.size(); ++i) {
+    for (int j = 0; j < sg.listOfJoints.size(); ++j) {
+      cout << "j: " << j;
+      cout << " -- HERE1" << endl;
+      if (j == 0) {  // root case
+        cout << "HERE2" << endl;
+        for (k = 0; k < sg.listOfJoints[i].channel; k++) {
+          sg.listOfJoints[j].posRot.push_back(sg.frames[i].data[dataPos]);
+          dataPos++;
+        }  // now plot it
+        cout << "HERE3" << endl;
+        DrawJoint(sg.listOfJoints[j].posRot[0],
+                  sg.listOfJoints[j].posRot[1],
+                  sg.listOfJoints[j].posRot[2]);
+      }
+      // else if (sg.listOfJoints[j].type == 2) {  // endsite
+      //   // idk yet
+      // } else {  // joint
+      //   for (k = 0; k < sg.listOfJoints[i].channel; k++) {
+      //     sg.listOfJoints[j].posRot.push_back(sg.frames[i].data[dataPos]);
+      //     dataPos++;
+      //   }
+        // DrawJoint(sg.listOfJoints[j].posRot[0],
+        //           sg.listOfJoints[j].posRot[1],
+        //           sg.listOfJoints[j].posRot[2]);
+      // }
     }
-    // DrawJoint(sg.listOfJoints[i].x,
-    //            sg.listOfJoints[i].y,
-    //            sg.listOfJoints[i].z);
-    // glBegin(GL_LINES);
-    // glVertex3f(sg.listOfJoints[i].x,
-    //            sg.listOfJoints[i].y,
-    //            sg.listOfJoints[i].z);
-    cout << "joints = " << ++count << endl;
   }
+  // for (int i = 0; i < sg.listOfJoints.size(); ++i) {
+  //   // if (!sg.listOfJoints[i].childIds.empty()) {
+  //   //   ChildCase(sg.listOfJoints[i]);
+  //   // } else {
+  //   // }
+
+  //   // glBegin(GL_LINES);
+  //   // glVertex3f(sg.listOfJoints[i].x,
+  //   //            sg.listOfJoints[i].y,
+  //   //            sg.listOfJoints[i].z);
+  //   // if (sg.listOfJoints[i].isChild == 0) {
+  //   //   RotateAxes(sg.listOfJoints[i]);
+  //   // } else {  // if it is child case
+  //   //     ChildCase(sg.listOfJoints[i]);
+  //   // }
+  //   DrawJoint(sg.listOfJoints[i].x,
+  //              sg.listOfJoints[i].y,
+  //              sg.listOfJoints[i].z);
+  //   // glBegin(GL_LINES);
+  //   // glVertex3f(sg.listOfJoints[i].x,
+  //   //            sg.listOfJoints[i].y,
+  //   //            sg.listOfJoints[i].z);
+  //   cout << "joints = " << ++count << endl;
+  // }
   // glEnd();
 
   if (showAxis) DrawAxis();
