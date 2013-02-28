@@ -197,17 +197,30 @@ void DrawBounds() {
   }
 }
 
-void RotateLeft() {  // TODO
-  glRotatef(90, 0, 1, 0);
+void RotateLeft() {
+  float temp1 = eye[0];
+  eye[0] = eye[0]*cos(1*PI/180) - eye[2]*sin(1*PI/180);
+  eye[1] = eye[1];
+  eye[2] = temp1*sin(1*PI/180) + eye[2]*cos(1*PI/180);
 }
 
-void RotateRight() {  // TODO
+void RotateRight() {
+  float temp1 = eye[0];
+  eye[0] = eye[0]*cos(-1*PI/180) - eye[2]*sin(-1*PI/180);
+  eye[1] = eye[1];
+  eye[2] = temp1*sin(-1*PI/180) + eye[2]*cos(-1*PI/180);
 }
 
-void ZoomIn() {  // TODO
+void ZoomIn() {
+  eye[0] = eye[0]*0.95;
+  eye[1] = eye[1]*0.95;
+  eye[2] = eye[2]*0.95;
 }
 
-void ZoomOut() {  // TODO
+void ZoomOut() {
+  eye[0] = eye[0]*1.05;
+  eye[1] = eye[1]*1.05;
+  eye[2] = eye[2]*1.05;
 }
 
 void DrawJoint(float x, float y, float z) {
@@ -278,16 +291,12 @@ void Display() {
   cout << "LOJ size: " << sg.listOfJoints.size() << endl;
   int dataPos = 0;  // want this to be static
   int k = 0;        // extra variable for various uses
-  for (int i = 0; i < sg.frames.size()-1; ++i) {
+  for (int i = 0; i < 2; ++i) {
+  // for (int i = 0; i < sg.frames.size()-1; ++i) {
     for (int j = 0; j < sg.listOfJoints.size(); ++j) {
-      cout << "j: " << j;
-      cout << " -- HERE1" << endl;
       if (j == 0) {  // root case
-        cout << "HERE2" << endl;
         for (k = 0; k < sg.listOfJoints[j].channel; k++) {
-          cout << "HERE4" << k << endl;
           sg.listOfJoints[j].posRot.push_back(sg.frames[i].data[dataPos]);
-          cout << "HERE5" << k << endl;
           dataPos++;
         }  // now plot it
         DrawJoint(sg.listOfJoints[j].posRot[0],
@@ -371,6 +380,22 @@ void Keyboard(unsigned char key, int x, int y) {
   Vec3f v;
 
   switch (key) {
+    case 'e':
+      eye[2] = eye[2] - 1;
+      center[2] = center[2] - 1;
+      break;
+    case 'd':
+      eye[2] = eye[2] + 1;
+      center[2] = center[2] + 1;
+      break;
+    case 's':
+      eye[0] = eye[0] - 1;
+      center[0] = center[0] - 1;
+      break;
+    case 'f':
+      eye[0] = eye[0] + 1;
+      center[0] = center[0] + 1;
+      break;
     case '1':
       waypoint = 1;
       ComputeLookAt();
@@ -384,29 +409,20 @@ void Keyboard(unsigned char key, int x, int y) {
       ComputeLookAt();
       break;
     case 'z':
-      // TODO
       cout << "Zoom in" << endl;
-      ZoomIn();
-      ComputeLookAt();
+        ZoomIn();
       break;
     case 'Z':
-      // TODO
       cout << "Zoom out" << endl;
       ZoomOut();
-      ComputeLookAt();
       break;
     case 'j':
-      // TODO
       cout << "Orbit left" << endl;
-      // glPushMatrix();
       RotateLeft();
-      ComputeLookAt();
       break;
     case 'k':
-      // TODO
       cout << "Orbit right" << endl;
       RotateRight();
-      ComputeLookAt();
       break;
     case ' ':
       // TODO -- figure out frames first
@@ -423,8 +439,6 @@ void Keyboard(unsigned char key, int x, int y) {
       exit(0);
       break;
   }
-
-  // let glut know to redraw the screen
   glutPostRedisplay();
 }
 
