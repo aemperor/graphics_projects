@@ -86,7 +86,7 @@ void SceneGraph::SetFrameSize(uint32_t size) {
 }
 
 void SceneGraph::AddFrame(float * data) {
-  cout << "addFrame" << endl;
+  // cout << "addFrame" << endl;
   int i = 0;
   frames[lastAddedFrame] = Frame();
   while (i < frameSize) {
@@ -94,8 +94,17 @@ void SceneGraph::AddFrame(float * data) {
     frames[lastAddedFrame].data.push_back(data[i]);
     i++;
   }
-
   lastAddedFrame++;
+}
+
+void SceneGraph::SetChannels() {
+  cout << "in setChannels" << endl;
+  int DataIndex = 0;
+  for (int i = 1; i < listOfJoints.size(); i++) {
+    for (int j = 0; j < listOfJoints[i].channel; j++) {
+      listOfJoints[i].posRot.push_back(frames[0].data[DataIndex]);
+    }
+  }
 }
 
 void SceneGraph::SetCurrentFrame(uint32_t frameNumber) {

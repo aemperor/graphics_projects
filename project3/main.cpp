@@ -223,54 +223,40 @@ void ZoomOut() {
   eye[2] = eye[2]*1.05;
 }
 
+void DrawTree(int i) {
+  cout << "inside DRAWTREE, i = " << i << endl;
+  glPushMatrix();
+  glTranslatef(sg.listOfJoints[i].xoff,
+               sg.listOfJoints[i].yoff,
+               sg.listOfJoints[i].zoff);
+  cout << "angleX = " << sg.listOfJoints[i].posRot[0] << endl;
+  cout << "angleY = " << sg.listOfJoints[i].posRot[1] << endl;
+  cout << "angleZ = " << sg.listOfJoints[i].posRot[2] << endl;
+  //  glRotatef(sg.listOfJoints[i].posRot[2], 0, 0, 1);
+  //  glRotatef(sg.listOfJoints[i].posRot[1], 0, 1, 0);
+  //  glRotatef(sg.listOfJoints[i].posRot[0], 1, 0, 0);
+    glutSolidSphere(0.5, 10, 10);
+  for (int j = 0; j < sg.listOfJoints[i].childIds.size(); j++) {
+    DrawTree(sg.listOfJoints[i].childIds[j]);
+  }
+  glPopMatrix();
+}
+
 void DrawJoint(float x, float y, float z) {
   glPushMatrix();
   glTranslatef(x, y, z);
-  glutSolidSphere(2, 10, 10);
+  glRotatef(sg.listOfJoints[0].posRot[5], 0, 0, 1);
+  glRotatef(sg.listOfJoints[0].posRot[4], 0, 1, 0);
+  glRotatef(sg.listOfJoints[0].posRot[3], 1, 0, 0);
+  glutSolidSphere(0.5, 10, 10);
+  cout << "children root: " << sg.listOfJoints[0].childIds.size() << endl;
+  for (int i = 0; i < sg.listOfJoints[0].childIds.size(); i++) {
+    DrawTree(sg.listOfJoints[0].childIds[i]);
+  }
   glPopMatrix();
 }
 
 void DrawSolidLine() {
-}
-
-void RotateAxes(SceneGraph::Joint3 v) {
-  int j = 0;
-  while (v.ordr[j++] != -1) {
-    switch (v.ordr[j]) {
-      case 5:
-        glRotatef(BVH_ZROT_IDX, BVH_XPOS_IDX, BVH_YPOS_IDX, BVH_ZPOS_IDX);
-        break;
-      case 4:
-        glRotatef(BVH_YROT_IDX, BVH_XPOS_IDX, BVH_YPOS_IDX, BVH_ZPOS_IDX);
-        break;
-      case 3:
-        glRotatef(BVH_XROT_IDX, BVH_XPOS_IDX, BVH_YPOS_IDX, BVH_ZPOS_IDX);
-        break;
-      default:
-        break;
-    }
-  }
-}
-
-void ChildCase(SceneGraph::Joint3 j) {
-  if (j.childIds.size() == 0) {
-    return;
-  } else {
-    int child;
-    for (int i = 0; i < j.childIds.size(); ++i) {
-      child = j.childIds[i];
-      if (!sg.listOfJoints[child].childIds.empty()) {
-        ChildCase(sg.listOfJoints[child]);
-      } else {
-        glPushMatrix();
-        RotateAxes(j);
-        // glVertex3f(sg.listOfJoints[child].x,
-        //            sg.listOfJoints[child].y,
-        //            sg.listOfJoints[child].z);
-        glPopMatrix();
-      }
-    }
-  }
 }
 
 void Display() {
@@ -289,58 +275,22 @@ void Display() {
   int count = 0;
   // TODO: draw scene graph and animate
   cout << "LOJ size: " << sg.listOfJoints.size() << endl;
+  //  sg.SetChannels();
   int dataPos = 0;  // want this to be static
   int k = 0;        // extra variable for various uses
-  for (int i = 0; i < 2; ++i) {
-  // for (int i = 0; i < sg.frames.size()-1; ++i) {
-    for (int j = 0; j < sg.listOfJoints.size(); ++j) {
-      if (j == 0) {  // root case
-        for (k = 0; k < sg.listOfJoints[j].channel; k++) {
-          sg.listOfJoints[j].posRot.push_back(sg.frames[i].data[dataPos]);
-          dataPos++;
-        }  // now plot it
-        DrawJoint(sg.listOfJoints[j].posRot[0],
-                  sg.listOfJoints[j].posRot[1],
-                  sg.listOfJoints[j].posRot[2]);
-      }
-      // else if (sg.listOfJoints[j].type == 2) {  // endsite
-      //   // idk yet
-      // } else {  // joint
-      //   for (k = 0; k < sg.listOfJoints[i].channel; k++) {
-      //     sg.listOfJoints[j].posRot.push_back(sg.frames[i].data[dataPos]);
-      //     dataPos++;
-      //   }
-        // DrawJoint(sg.listOfJoints[j].posRot[0],
-        //           sg.listOfJoints[j].posRot[1],
-        //           sg.listOfJoints[j].posRot[2]);
-      // }
+  int j = 0;
+  int DataIndex = 0;
+  for (int i = 0; i < sg.listOfJoints.size(); i++) {
+    for (int j = 0; j < sg.listOfJoints[i].channel; j++) {
+      sg.listOfJoints[i].posRot.push_back(sg.frames[0].data[DataIndex]);
+      DataIndex++;
     }
   }
-  // for (int i = 0; i < sg.listOfJoints.size(); ++i) {
-  //   // if (!sg.listOfJoints[i].childIds.empty()) {
-  //   //   ChildCase(sg.listOfJoints[i]);
-  //   // } else {
-  //   // }
+  DrawJoint(sg.listOfJoints[j].posRot[0],
+            sg.listOfJoints[j].posRot[1],
+            sg.listOfJoints[j].posRot[2]);
 
-  //   // glBegin(GL_LINES);
-  //   // glVertex3f(sg.listOfJoints[i].x,
-  //   //            sg.listOfJoints[i].y,
-  //   //            sg.listOfJoints[i].z);
-  //   // if (sg.listOfJoints[i].isChild == 0) {
-  //   //   RotateAxes(sg.listOfJoints[i]);
-  //   // } else {  // if it is child case
-  //   //     ChildCase(sg.listOfJoints[i]);
-  //   // }
-  //   DrawJoint(sg.listOfJoints[i].x,
-  //              sg.listOfJoints[i].y,
-  //              sg.listOfJoints[i].z);
-  //   // glBegin(GL_LINES);
-  //   // glVertex3f(sg.listOfJoints[i].x,
-  //   //            sg.listOfJoints[i].y,
-  //   //            sg.listOfJoints[i].z);
-  //   cout << "joints = " << ++count << endl;
-  // }
-  // glEnd();
+  glEnd();
   cout << "HERE5" << endl;
   if (showAxis) DrawAxis();
   if (showBounds) DrawBounds();

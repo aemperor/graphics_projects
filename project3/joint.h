@@ -27,6 +27,7 @@ class SceneGraph {
   void AddFrame(float * data);
   void SetCurrentFrame(uint32_t frameNumber);
   void Resize(uint32_t id);
+  void SetChannels();
 
   struct Joint3 {
     Joint3() {}
