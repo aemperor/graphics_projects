@@ -242,14 +242,14 @@ void DrawTree(int i) {
   }
   glColor3f(0.5f, 0.0f, 1.0f);
   glutSolidSphere(0.5, 10, 10);
-  glColor3f(0.0f, 0.0f, 0.0f);
-  glBegin(GL_LINES);
-  glVertex3f(0.0f, 0.0f, 0.0f);
-  glVertex3f(sg.listOfJoints[i].xoff,
-             sg.listOfJoints[i].yoff,
-             sg.listOfJoints[i].zoff);
-  glEnd();
   for (int j = 0; j < sg.listOfJoints[i].childIds.size(); ++j) {
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, 0.0f);
+    glVertex3f(sg.listOfJoints[sg.listOfJoints[i].childIds[j]].xoff,
+               sg.listOfJoints[sg.listOfJoints[i].childIds[j]].yoff,
+               sg.listOfJoints[sg.listOfJoints[i].childIds[j]].zoff);
+    glEnd();
     DrawTree(sg.listOfJoints[i].childIds[j]);
   }
   glPopMatrix();
@@ -258,9 +258,9 @@ void DrawTree(int i) {
 void DrawJoint(float x, float y, float z) {
   glPushMatrix();
   glTranslatef(x, y, z);
-  glRotatef(sg.listOfJoints[0].posRot[5], 0, 0, 1);
+  glRotatef(sg.listOfJoints[0].posRot[3], 0, 0, 1);
   glRotatef(sg.listOfJoints[0].posRot[4], 0, 1, 0);
-  glRotatef(sg.listOfJoints[0].posRot[3], 1, 0, 0);
+  glRotatef(sg.listOfJoints[0].posRot[5], 1, 0, 0);
   sg.listOfJoints[0].posRot.clear();
   glutSolidSphere(0.5, 10, 10);
   for (int i = 0; i < sg.listOfJoints[0].childIds.size(); i++) {
