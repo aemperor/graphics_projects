@@ -43,7 +43,7 @@ class SceneGraph {
     uint16_t channel;
     int ordr[6];
     int isChild;
-    // uint32_t frameIdx;
+    uint32_t frameIdx;
   };
   // holder for joints while being parsed
   vector<Joint3> listOfJoints;

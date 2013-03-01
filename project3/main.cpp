@@ -38,6 +38,8 @@ void Keyboard(unsigned char key, int x, int y);
 void Idle();
 
 SceneGraph sg;
+bool play = false;
+int frameNumber = 0;
 
 #define PI 3.14159265f
 
@@ -229,13 +231,15 @@ void DrawTree(int i) {
   glTranslatef(sg.listOfJoints[i].xoff,
                sg.listOfJoints[i].yoff,
                sg.listOfJoints[i].zoff);
-  cout << "angleX = " << sg.listOfJoints[i].posRot[0] << endl;
-  cout << "angleY = " << sg.listOfJoints[i].posRot[1] << endl;
-  cout << "angleZ = " << sg.listOfJoints[i].posRot[2] << endl;
-  // glRotatef(sg.listOfJoints[i].posRot[2], 0, 0, 1);
-  // glRotatef(sg.listOfJoints[i].posRot[1], 0, 1, 0);
-  // glRotatef(sg.listOfJoints[i].posRot[0], 1, 0, 0);
-    glutSolidSphere(0.5, 10, 10);
+  if (sg.listOfJoints[i].channel > 0) {
+    cout << "angleX = " << sg.listOfJoints[i].posRot[0] << endl;
+    cout << "angleY = " << sg.listOfJoints[i].posRot[1] << endl;
+    cout << "angleZ = " << sg.listOfJoints[i].posRot[2] << endl;
+    glRotatef(sg.listOfJoints[i].posRot[0], 0, 0, 1);
+    glRotatef(sg.listOfJoints[i].posRot[1], 0, 1, 0);
+    glRotatef(sg.listOfJoints[i].posRot[2], 1, 0, 0);
+  }
+  glutSolidSphere(0.5, 10, 10);
   for (int j = 0; j < sg.listOfJoints[i].childIds.size(); j++) {
     DrawTree(sg.listOfJoints[i].childIds[j]);
   }
@@ -276,26 +280,26 @@ void Display() {
   // TODO: draw scene graph and animate
   cout << "LOJ size: " << sg.listOfJoints.size() << endl;
   //  sg.SetChannels();
-  int k = 0;        // extra variable for various uses
-  int j = 0;
-  int DataIndex = 0;
   for (int i = 0; i < sg.listOfJoints.size(); i++) {
+    int DataIndex = sg.listOfJoints[i].frameIdx;
     for (int j = 0; j < sg.listOfJoints[i].channel; j++) {
-      sg.listOfJoints[i].posRot.push_back(sg.frames[0].frameData[DataIndex]);
+      sg.listOfJoints[i].posRot.push_back(
+               sg.frames[frameNumber].frameData[DataIndex]);
       DataIndex++;
     }
   }
-  DrawJoint(sg.listOfJoints[j].posRot[0],
-            sg.listOfJoints[j].posRot[1],
-            sg.listOfJoints[j].posRot[2]);
+  DrawJoint(sg.listOfJoints[0].posRot[0],
+            sg.listOfJoints[0].posRot[1],
+            sg.listOfJoints[0].posRot[2]);
 
   glEnd();
-  cout << "HERE5" << endl;
+  if (play && frameNumber < sg.frames.size())
+    frameNumber++;
   if (showAxis) DrawAxis();
   if (showBounds) DrawBounds();
-
   glFlush();          // finish the drawing commands
   glutSwapBuffers();  // and update the screen
+  glutPostRedisplay();
 }
 
 // This reshape function is called whenever the user
@@ -374,7 +378,11 @@ void Keyboard(unsigned char key, int x, int y) {
       RotateRight();
       break;
     case ' ':
-      // TODO -- figure out frames first
+      if (play) {
+        play = false;
+      } else {
+        play = true;
+      }
       cout << "Start/stop animation" << endl;
       break;
     case 'a':

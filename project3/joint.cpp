@@ -13,23 +13,26 @@ void SceneGraph::CreateRoot(const char * name, uint32_t id) {
   // special case for root -- does not need Resize()
   listOfJoints.push_back(Joint3(name, id));
   listOfJoints[id].type = 0;
+  listOfJoints[id].channel = 0;
 }
 
 void SceneGraph::CreateJoint(const char * name, uint32_t id) {
   cout << "createJoint:name=" << name << " id=" << id << endl;
-  if (listOfJoints.size() <= id)
-    Resize(id);
-  listOfJoints[id] = Joint3(name, id);
+  // if (listOfJoints.capacity() <= id)
+  //  Resize(id);
+  listOfJoints.push_back(Joint3(name, id));
   listOfJoints[id].isChild = 0;
   listOfJoints[id].type = 1;
+  listOfJoints[id].channel = 0;
 }
 
 void SceneGraph::CreateEndSite(const char * name, uint32_t id) {
   cout << "createEndSite:name=" << name << " id=" << id;
-  if (listOfJoints.size() <= id)
-    Resize(id);
-  listOfJoints[id] = Joint3(name, id);
+  // if (listOfJoints.size() <= id)
+  //  Resize(id);
+  listOfJoints.push_back(Joint3(name, id));
   listOfJoints[id].type = 2;
+  listOfJoints[id].channel = 0;
 }
 
 void SceneGraph::SetChild(uint32_t parent, uint32_t child) {
@@ -49,6 +52,7 @@ void SceneGraph::SetOffset(uint32_t id, float * offset) {
 void SceneGraph::SetNumChannels(uint32_t id, uint16_t num) {
   cout << "setNumChannels:id=" << id << " num=" << num << endl;
   // right now all this does is set the number of channels in each joint
+  // if (listOfJoints[id].type != 2)
   listOfJoints[id].channel = num;
 }
 
@@ -68,7 +72,7 @@ void SceneGraph::SetChannelOrder(uint32_t id, int * order) {
 void SceneGraph::SetFrameIndex(uint32_t id, uint32_t index) {
   cout << "setFrameIndex:id=" << id << " index=" << index << endl;
   // TODO
-  // listOfJoints[id].frameIdx = index;
+  listOfJoints[id].frameIdx = index;
 }
 
 void SceneGraph::SetFrameTime(float delta) {
@@ -86,7 +90,6 @@ void SceneGraph::SetFrameSize(uint32_t size) {
 }
 
 void SceneGraph::AddFrame(float * data) {
-
   float bs = 0.0;
   int i = 0;
   //  float * tempFrameData =
@@ -94,7 +97,7 @@ void SceneGraph::AddFrame(float * data) {
   //  memcpy(tempFrameData, data, frameSize);
   Frame newFrame = Frame();
   while (i < frameSize) {
-    cout << "i: " << i << "data: " << data[i] << endl;
+    // cout << "i: " << i << "data: " << data[i] << endl;
     newFrame.frameData.push_back(data[i]);
     i++;
   }
@@ -117,7 +120,7 @@ void SceneGraph::SetCurrentFrame(uint32_t frameNumber) {
 }
 
 void SceneGraph::Resize(uint32_t id) {
-  while (id >= listOfJoints.size()) {
+  while (id >= listOfJoints.capacity()) {
     listOfJoints.resize(listOfJoints.size()*2);
   }
 }
