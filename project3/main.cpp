@@ -40,6 +40,10 @@ void Idle();
 SceneGraph sg;
 bool play = false;
 int frameNumber = 0;
+int curTime = 0;
+int prevTime = 0;
+int interval;
+int rate = 20;
 
 #define PI 3.14159265f
 
@@ -236,14 +240,16 @@ void DrawTree(int i) {
     glRotatef(sg.listOfJoints[i].posRot[2], 1, 0, 0);
     sg.listOfJoints[i].posRot.clear();
   }
+  glColor3f(0.5f, 0.0f, 1.0f);
   glutSolidSphere(0.5, 10, 10);
+  glColor3f(0.0f, 0.0f, 0.0f);
   glBegin(GL_LINES);
-  glVertex3f(0.0, 0.0, 0.0);
+  glVertex3f(0.0f, 0.0f, 0.0f);
   glVertex3f(sg.listOfJoints[i].xoff,
              sg.listOfJoints[i].yoff,
              sg.listOfJoints[i].zoff);
   glEnd();
-  for (int j = 0; j < sg.listOfJoints[i].childIds.size(); j++) {
+  for (int j = 0; j < sg.listOfJoints[i].childIds.size(); ++j) {
     DrawTree(sg.listOfJoints[i].childIds[j]);
   }
   glPopMatrix();
@@ -274,8 +280,7 @@ void Display() {
   SetCamera();
   SetDrawMode();
   DrawFloor(800, 800, 80, 80);
-  glColor3f(0.0f, 0.0f, 0.0f);
-  int count = 0;
+  glColor3f(0.5f, 0.0f, 1.0f);
   // TODO: draw scene graph and animate
   if (frameNumber >= sg.frames.size())  // reset to loop
     frameNumber = 0;
@@ -287,13 +292,20 @@ void Display() {
       DataIndex++;
     }
   }
+  // controls speed up/slow down
+  while (interval < rate) {
+    curTime = glutGet(GLUT_ELAPSED_TIME);
+    interval = curTime - prevTime;
+  }
 
+  // Draw root to draw the rest
   DrawJoint(sg.listOfJoints[0].posRot[0],
             sg.listOfJoints[0].posRot[1],
             sg.listOfJoints[0].posRot[2]);
-
-  glEnd();
   if (play) {
+    interval = 0;
+    prevTime = curTime;
+    curTime = 0;
     frameNumber++;
   }
   if (showAxis) DrawAxis();
@@ -301,7 +313,6 @@ void Display() {
   glFlush();          // finish the drawing commands
   glutSwapBuffers();  // and update the screen
   glutPostRedisplay();
-  sleep(sg.frameTime * 100);  // sleep for frame time for real time movement
 }
 
 // This reshape function is called whenever the user
@@ -323,6 +334,10 @@ void Resize(int width, int height) {
 
   // let glut know to redraw the screen
   glutPostRedisplay();
+}
+
+void SpeedRate(float speed) {
+  sleep(speed * sg.frameTime);
 }
 
 // This function is called whenever the user hits letters or numbers
@@ -387,6 +402,20 @@ void Keyboard(unsigned char key, int x, int y) {
       }
       // cout << "Start/stop animation" << endl;
       break;
+    case 'c':
+      rate = (rate < 100) ? rate*=5 : rate;
+      cout << "slowing down -- rate = " << rate << endl;
+      break;
+    case 'x':
+      rate = (rate > 1) ? rate/=5 : rate;
+      if (rate == 0)
+        rate = 1;
+      cout << "speeding up -- rate = " << rate << endl;
+      break;
+    case 'g':
+      rate = 20;
+      cout << "returning to original speed -- rate = " << rate << endl;
+      break;
     case 'a':
       showAxis=!showAxis;
       break;
@@ -429,6 +458,9 @@ void showMenu() {
   cout << "d - move forward" << endl;
   cout << "f - move right" << endl;
   cout << "s - move left" << endl;
+  cout << "x - speed up" << endl;
+  cout << "c - slow down" << endl;
+  cout << "g - original speed" << endl;
   cout << "[SPACE] - start/stop" << endl;
 }
 

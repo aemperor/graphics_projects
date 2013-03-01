@@ -12,7 +12,7 @@ CSid: sharonc
 
 ---- Member 3 ----
 Roberto Weller
-UTeid:
+UTeid: rw9636
 CSid: rweller
 
 Additional features:
@@ -21,3 +21,6 @@ Keyboard:
 - s: move left
 - d: move forward
 - f: move right
+- x: speed up animation
+- c: slow down animation
+- g: return animation to original speed
