@@ -50,7 +50,7 @@ class SceneGraph {
 
   struct Frame {
     Frame() {}
-    vector<float> data;
+    vector<float> frameData;
     uint32_t numFrames;
     uint32_t frameIdx;
   };

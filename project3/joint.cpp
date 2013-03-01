@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <iostream>
 #include <vector>
 
@@ -77,7 +78,6 @@ void SceneGraph::SetFrameTime(float delta) {
 
 void SceneGraph::SetNumFrames(uint32_t num) {
   cout << "setNumFrames:num=" << num << endl;
-  frames = vector<Frame>(num);  // frames.size() == num
 }
 
 void SceneGraph::SetFrameSize(uint32_t size) {
@@ -86,25 +86,30 @@ void SceneGraph::SetFrameSize(uint32_t size) {
 }
 
 void SceneGraph::AddFrame(float * data) {
-  // cout << "addFrame" << endl;
+
+  float bs = 0.0;
   int i = 0;
-  frames[lastAddedFrame] = Frame();
+  //  float * tempFrameData =
+  //  reinterpret_cast<float*>(malloc(frameSize*sizeof(bs)));
+  //  memcpy(tempFrameData, data, frameSize);
+  Frame newFrame = Frame();
   while (i < frameSize) {
-    // cout << "data: " << data[i] << endl;
-    frames[lastAddedFrame].data.push_back(data[i]);
+    cout << "i: " << i << "data: " << data[i] << endl;
+    newFrame.frameData.push_back(data[i]);
     i++;
   }
+  frames.push_back(newFrame);
   lastAddedFrame++;
 }
 
 void SceneGraph::SetChannels() {
-  cout << "in setChannels" << endl;
-  int DataIndex = 0;
-  for (int i = 1; i < listOfJoints.size(); i++) {
-    for (int j = 0; j < listOfJoints[i].channel; j++) {
-      listOfJoints[i].posRot.push_back(frames[0].data[DataIndex]);
-    }
-  }
+  cout << "!!!!!!!!!in setChannels" << endl;
+  //  int DataIndex = 0;
+  //  for (int i = 1; i < listOfJoints.size(); i++) {
+  //  for (int j = 0; j < listOfJoints[i].channel; j++) {
+  //    listOfJoints[i].posRot.push_back(frames[0].frameData[DataIndex]);
+  //  }
+  //  }
 }
 
 void SceneGraph::SetCurrentFrame(uint32_t frameNumber) {

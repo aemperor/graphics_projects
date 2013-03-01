@@ -232,9 +232,9 @@ void DrawTree(int i) {
   cout << "angleX = " << sg.listOfJoints[i].posRot[0] << endl;
   cout << "angleY = " << sg.listOfJoints[i].posRot[1] << endl;
   cout << "angleZ = " << sg.listOfJoints[i].posRot[2] << endl;
-  //  glRotatef(sg.listOfJoints[i].posRot[2], 0, 0, 1);
-  //  glRotatef(sg.listOfJoints[i].posRot[1], 0, 1, 0);
-  //  glRotatef(sg.listOfJoints[i].posRot[0], 1, 0, 0);
+  // glRotatef(sg.listOfJoints[i].posRot[2], 0, 0, 1);
+  // glRotatef(sg.listOfJoints[i].posRot[1], 0, 1, 0);
+  // glRotatef(sg.listOfJoints[i].posRot[0], 1, 0, 0);
     glutSolidSphere(0.5, 10, 10);
   for (int j = 0; j < sg.listOfJoints[i].childIds.size(); j++) {
     DrawTree(sg.listOfJoints[i].childIds[j]);
@@ -276,13 +276,12 @@ void Display() {
   // TODO: draw scene graph and animate
   cout << "LOJ size: " << sg.listOfJoints.size() << endl;
   //  sg.SetChannels();
-  int dataPos = 0;  // want this to be static
   int k = 0;        // extra variable for various uses
   int j = 0;
   int DataIndex = 0;
   for (int i = 0; i < sg.listOfJoints.size(); i++) {
     for (int j = 0; j < sg.listOfJoints[i].channel; j++) {
-      sg.listOfJoints[i].posRot.push_back(sg.frames[0].data[DataIndex]);
+      sg.listOfJoints[i].posRot.push_back(sg.frames[0].frameData[DataIndex]);
       DataIndex++;
     }
   }
