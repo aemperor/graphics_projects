@@ -26,7 +26,6 @@ class SceneGraph {
   void SetFrameSize(uint32_t size);
   void AddFrame(float * data);
   void SetCurrentFrame(uint32_t frameNumber);
-  void Resize(uint32_t id);
   void SetChannels();
 
   struct Joint3 {
@@ -34,9 +33,7 @@ class SceneGraph {
     Joint3(const char * name, uint32_t id) {}
     int type;  // 0 = root, 1 = joint, 2 = endsite
     vector<float> posRot;  // position/rotation vector to replace pos/rot
-    // float x, y, z;  // position
     float xoff, yoff, zoff;  // offset
-    // float xrot, yrot, zrot;  // rotation
     uint32_t id;
     const char * name;
     vector<uint32_t> childIds;
@@ -45,7 +42,7 @@ class SceneGraph {
     int isChild;
     uint32_t frameIdx;
   };
-  // holder for joints while being parsed
+
   vector<Joint3> listOfJoints;
 
   struct Frame {

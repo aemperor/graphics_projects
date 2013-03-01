@@ -13,6 +13,11 @@ CSid: sharonc
 ---- Member 3 ----
 Roberto Weller
 UTeid:
-CSid: 
+CSid: rweller
 
 Additional features:
+Keyboard:
+- e: move backward
+- s: move left
+- d: move forward
+- f: move right

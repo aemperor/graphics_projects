@@ -226,20 +226,23 @@ void ZoomOut() {
 }
 
 void DrawTree(int i) {
-  cout << "inside DRAWTREE, i = " << i << endl;
   glPushMatrix();
   glTranslatef(sg.listOfJoints[i].xoff,
                sg.listOfJoints[i].yoff,
                sg.listOfJoints[i].zoff);
   if (sg.listOfJoints[i].channel > 0) {
-    cout << "angleX = " << sg.listOfJoints[i].posRot[0] << endl;
-    cout << "angleY = " << sg.listOfJoints[i].posRot[1] << endl;
-    cout << "angleZ = " << sg.listOfJoints[i].posRot[2] << endl;
     glRotatef(sg.listOfJoints[i].posRot[0], 0, 0, 1);
     glRotatef(sg.listOfJoints[i].posRot[1], 0, 1, 0);
     glRotatef(sg.listOfJoints[i].posRot[2], 1, 0, 0);
+    sg.listOfJoints[i].posRot.clear();
   }
   glutSolidSphere(0.5, 10, 10);
+  glBegin(GL_LINES);
+  glVertex3f(0.0, 0.0, 0.0);
+  glVertex3f(sg.listOfJoints[i].xoff,
+             sg.listOfJoints[i].yoff,
+             sg.listOfJoints[i].zoff);
+  glEnd();
   for (int j = 0; j < sg.listOfJoints[i].childIds.size(); j++) {
     DrawTree(sg.listOfJoints[i].childIds[j]);
   }
@@ -252,15 +255,12 @@ void DrawJoint(float x, float y, float z) {
   glRotatef(sg.listOfJoints[0].posRot[5], 0, 0, 1);
   glRotatef(sg.listOfJoints[0].posRot[4], 0, 1, 0);
   glRotatef(sg.listOfJoints[0].posRot[3], 1, 0, 0);
+  sg.listOfJoints[0].posRot.clear();
   glutSolidSphere(0.5, 10, 10);
-  cout << "children root: " << sg.listOfJoints[0].childIds.size() << endl;
   for (int i = 0; i < sg.listOfJoints[0].childIds.size(); i++) {
     DrawTree(sg.listOfJoints[0].childIds[i]);
   }
   glPopMatrix();
-}
-
-void DrawSolidLine() {
 }
 
 void Display() {
@@ -275,31 +275,33 @@ void Display() {
   SetDrawMode();
   DrawFloor(800, 800, 80, 80);
   glColor3f(0.0f, 0.0f, 0.0f);
-  glLineWidth(5.0f);
   int count = 0;
   // TODO: draw scene graph and animate
-  cout << "LOJ size: " << sg.listOfJoints.size() << endl;
-  //  sg.SetChannels();
+  if (frameNumber >= sg.frames.size())  // reset to loop
+    frameNumber = 0;
   for (int i = 0; i < sg.listOfJoints.size(); i++) {
     int DataIndex = sg.listOfJoints[i].frameIdx;
     for (int j = 0; j < sg.listOfJoints[i].channel; j++) {
       sg.listOfJoints[i].posRot.push_back(
-               sg.frames[frameNumber].frameData[DataIndex]);
+             sg.frames[frameNumber].frameData[DataIndex]);
       DataIndex++;
     }
   }
+
   DrawJoint(sg.listOfJoints[0].posRot[0],
             sg.listOfJoints[0].posRot[1],
             sg.listOfJoints[0].posRot[2]);
 
   glEnd();
-  if (play && frameNumber < sg.frames.size())
+  if (play) {
     frameNumber++;
+  }
   if (showAxis) DrawAxis();
   if (showBounds) DrawBounds();
   glFlush();          // finish the drawing commands
   glutSwapBuffers();  // and update the screen
   glutPostRedisplay();
+  sleep(sg.frameTime * 100);  // sleep for frame time for real time movement
 }
 
 // This reshape function is called whenever the user
@@ -362,19 +364,19 @@ void Keyboard(unsigned char key, int x, int y) {
       ComputeLookAt();
       break;
     case 'z':
-      cout << "Zoom in" << endl;
+      // cout << "Zoom in" << endl;
         ZoomIn();
       break;
     case 'Z':
-      cout << "Zoom out" << endl;
+      // cout << "Zoom out" << endl;
       ZoomOut();
       break;
     case 'j':
-      cout << "Orbit left" << endl;
+      // cout << "Orbit left" << endl;
       RotateLeft();
       break;
     case 'k':
-      cout << "Orbit right" << endl;
+      // cout << "Orbit right" << endl;
       RotateRight();
       break;
     case ' ':
@@ -383,7 +385,7 @@ void Keyboard(unsigned char key, int x, int y) {
       } else {
         play = true;
       }
-      cout << "Start/stop animation" << endl;
+      // cout << "Start/stop animation" << endl;
       break;
     case 'a':
       showAxis=!showAxis;
@@ -423,6 +425,10 @@ void showMenu() {
   cout << "Z - zoom out" << endl;
   cout << "j - rotate left" << endl;
   cout << "k - rotate right" << endl;
+  cout << "e - move backward" << endl;
+  cout << "d - move forward" << endl;
+  cout << "f - move right" << endl;
+  cout << "s - move left" << endl;
   cout << "[SPACE] - start/stop" << endl;
 }
 
