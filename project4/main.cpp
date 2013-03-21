@@ -22,6 +22,21 @@ float window_aspect = window_width / static_cast<float>(window_height);
 
 bool scene_lighting;
 
+struct Point2 {
+  GLfloat x, y;
+  Point2() {
+    x = 0;
+    y = 0;
+  }
+  Point2(GLfloat _x, GLfloat _y) {
+    x = _x;
+    y = _y;
+  }
+};
+
+Point2 mouse_pnt(0, 0);
+GLfloat norm_x, norm_y;
+
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -45,6 +60,10 @@ void Display() {
   glDisable(GL_LIGHTING);
   glLineWidth(4);
   DrawAxis();
+  glColor3f(1.0, 0.0, 0.0);
+  glTranslatef(0.0, 0.0, 0.0);
+  glutSolidSphere(0.5, 30.0, 30.0);
+  glutWireCube(2.0);
   glEnable(GL_LIGHTING);
 
   glFlush();
@@ -132,6 +151,14 @@ void DrawAxis() {
 
 void MouseButton(int button, int state, int x, int y) {
   // TODO implement arc ball and zoom
+  if (button == GLUT_LEFT_BUTTON) {
+    if (state == GLUT_DOWN) {
+      mouse_pnt = Point2(x, window_height - y);
+      norm_x = ((2 * mouse_pnt.x) / window_width) - 1;
+      norm_y = ((2 * mouse_pnt.y) / window_height) - 1;
+      cout << "(norm_x, norm_y) (" << norm_x << "," << norm_y << ")" << endl;
+    }
+  }
   glutPostRedisplay();
 }
 
