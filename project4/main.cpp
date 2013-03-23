@@ -20,7 +20,11 @@ GLuint* texture_ids;
 int window_width = 800, window_height = 600;
 float window_aspect = window_width / static_cast<float>(window_height);
 
+float angle = 0.0;
+Vec3f rotation_axis, start_vector, end_vector;
+
 bool scene_lighting;
+bool isClicked = false;
 
 struct Point2 {
   GLfloat x, y;
@@ -34,8 +38,7 @@ struct Point2 {
   }
 };
 
-Point2 mouse_pnt(0, 0);
-GLfloat norm_x, norm_y;
+Point2 mouse_pnt, mouse_curr;
 
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -59,11 +62,9 @@ void Display() {
   // You can leave the axis in if you like.
   glDisable(GL_LIGHTING);
   glLineWidth(4);
+
+  glRotatef(angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
   DrawAxis();
-  glColor3f(1.0, 0.0, 0.0);
-  glTranslatef(0.0, 0.0, 0.0);
-  glutSolidSphere(0.5, 30.0, 30.0);
-  glutWireCube(2.0);
   glEnable(GL_LIGHTING);
 
   glFlush();
@@ -149,14 +150,29 @@ void DrawAxis() {
   glEnd();
 }
 
+Vec3f make_arcball_vector(int x, int y) {
+    Vec3f vector = Vec<float, 3u>::makeVec((2.0 * x / window_width) - 1.0,
+                                           (2.0 * y / window_height) - 1.0,
+                                            0.0);
+    float length = sqrt(vector.x[0] * vector.x[0] +
+                        vector.x[1] * vector.x[1]);
+    if (length <= 1*1) {
+      vector.x[2] = sqrt(1 - length);
+    } else {  // nearest point
+        vector = vector.unit();
+    }
+
+    return vector;
+}
+
 void MouseButton(int button, int state, int x, int y) {
   // TODO implement arc ball and zoom
   if (button == GLUT_LEFT_BUTTON) {
     if (state == GLUT_DOWN) {
+      isClicked = true;
       mouse_pnt = Point2(x, window_height - y);
-      norm_x = ((2 * mouse_pnt.x) / window_width) - 1;
-      norm_y = ((2 * mouse_pnt.y) / window_height) - 1;
-      cout << "(norm_x, norm_y) (" << norm_x << "," << norm_y << ")" << endl;
+    } else {
+      isClicked = false;
     }
   }
   glutPostRedisplay();
@@ -164,6 +180,24 @@ void MouseButton(int button, int state, int x, int y) {
 
 void MouseMotion(int x, int y) {
   // TODO implement arc ball and zoom
+  if (isClicked) {
+    mouse_curr.x = x;
+    mouse_curr.y = window_height - y;
+
+    start_vector = make_arcball_vector(mouse_pnt.x, mouse_pnt.y);
+    end_vector   = make_arcball_vector(mouse_curr.x, mouse_curr.y);
+
+    angle = acos(min(1.0f, start_vector * end_vector)) * 180 / M_PI;
+    rotation_axis = start_vector ^ end_vector;
+
+    start_vector = end_vector;
+
+    cout << "start: " << start_vector << "\n";
+    cout << "end: "   << end_vector << "\n";
+    cout << "dot: "   << start_vector * end_vector << "\n";
+    cout << "angle: " << angle << " degrees\n" << endl;
+  }
+
   glutPostRedisplay();
 }
 
