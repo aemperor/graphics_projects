@@ -10,6 +10,8 @@
 #include "./io.h"
 #include "./texture.h"
 
+#define ARCBALL_RADIUS 1
+
 using namespace std;
 
 Mesh mesh;
@@ -22,6 +24,15 @@ float window_aspect = window_width / static_cast<float>(window_height);
 
 float angle = 0.0;
 Vec3f rotation_axis, start_vector, end_vector;
+GLfloat previous_rotation[16] = {1.0f, 0.0f, 0.0f, 0.0f,
+                                  0.0f, 1.0f, 0.0f, 0.0f,
+                                  0.0f, 0.0f, 1.0f, 0.0f,
+                                  0.0f, 0.0f, 0.0f, 0.0f};
+
+GLfloat current_rotation[16] = {1.0f, 0.0f, 0.0f, 0.0f,
+                                  0.0f, 1.0f, 0.0f, 0.0f,
+                                  0.0f, 0.0f, 1.0f, 0.0f,
+                                  0.0f, 0.0f, 0.0f, 0.0f};
 
 bool scene_lighting;
 bool isClicked = false;
@@ -38,6 +49,9 @@ struct Point2 {
   }
 };
 
+void PrintMatrix();
+void PrintMatrix(GLfloat* m);
+
 Point2 mouse_pnt, mouse_curr;
 
 void Display() {
@@ -51,9 +65,19 @@ void Display() {
   // mesh.bb() may be useful.
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+
+  glPushMatrix();
+  cout << "matrix" << endl;
+  PrintMatrix(previous_rotation);
+  glLoadMatrixf(previous_rotation);
+  cout << "angle" << angle << endl;
+  glRotatef(angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
+  glPopMatrix();
+
   gluLookAt(2, 2, 5,
             0, 0, 0,
             0, 1, 0);
+
 
   // TODO set up lighting, material properties and render mesh.
   // Be sure to call glEnable(GL_RESCALE_NORMAL) so your normals
@@ -63,7 +87,6 @@ void Display() {
   glDisable(GL_LIGHTING);
   glLineWidth(4);
 
-  glRotatef(angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
   DrawAxis();
   glEnable(GL_LIGHTING);
 
@@ -156,7 +179,7 @@ Vec3f make_arcball_vector(int x, int y) {
                                             0.0);
     float length = sqrt(vector.x[0] * vector.x[0] +
                         vector.x[1] * vector.x[1]);
-    if (length <= 1*1) {
+    if (length <= ARCBALL_RADIUS*ARCBALL_RADIUS) {
       vector.x[2] = sqrt(1 - length);
     } else {  // nearest point
         vector = vector.unit();
@@ -171,6 +194,7 @@ void MouseButton(int button, int state, int x, int y) {
     if (state == GLUT_DOWN) {
       isClicked = true;
       mouse_pnt = Point2(x, window_height - y);
+      memcpy(previous_rotation, current_rotation, sizeof(current_rotation));
     } else {
       isClicked = false;
     }
@@ -181,6 +205,10 @@ void MouseButton(int button, int state, int x, int y) {
 void MouseMotion(int x, int y) {
   // TODO implement arc ball and zoom
   if (isClicked) {
+    glPushMatrix();
+    MultMatrix(previous_rotation);
+    glGetFloatv(GL_MODELVIEW_MATRIX, current_rotation);
+    glPopMatrix();
     mouse_curr.x = x;
     mouse_curr.y = window_height - y;
 
@@ -192,10 +220,12 @@ void MouseMotion(int x, int y) {
 
     start_vector = end_vector;
 
+    /*
     cout << "start: " << start_vector << "\n";
     cout << "end: "   << end_vector << "\n";
     cout << "dot: "   << start_vector * end_vector << "\n";
     cout << "angle: " << angle << " degrees\n" << endl;
+    */
   }
 
   glutPostRedisplay();
