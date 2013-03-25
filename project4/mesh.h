@@ -73,6 +73,11 @@ class Mesh {
 
   void compute_normals();
 
+  std::vector<Vec3f> vertices;
+  std::vector<Vec3f> textures;
+  std::vector<vector<int> > polyVerts;
+  std::vector<vector<int> > polyTexts;
+
  private:
   // TODO add necessary data structures here
 
@@ -83,3 +88,4 @@ class Mesh {
 };
 
 #endif
+

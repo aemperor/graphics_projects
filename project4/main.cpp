@@ -54,6 +54,15 @@ void PrintMatrix(GLfloat* m);
 
 Point2 mouse_pnt, mouse_curr;
 
+void DrawVertices() {
+  glColor3f(1.0, 0.0, 0.0);
+  for (int i = 0; i < mesh.vertices.size(); ++i) {
+    glVertex3f(mesh.vertices[i][0],
+               mesh.vertices[i][1],
+               mesh.vertices[i][2]);
+  }
+}
+
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -66,13 +75,12 @@ void Display() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
-  glPushMatrix();
   cout << "matrix" << endl;
   PrintMatrix(previous_rotation);
-  glLoadMatrixf(previous_rotation);
+  // glLoadMatrixf(previous_rotation);
   cout << "angle" << angle << endl;
-  glRotatef(angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
-  glPopMatrix();
+  // glRotatef(angle, rotation_axis.x[0],
+  // rotation_axis.x[1], rotation_axis.x[2]);
 
   gluLookAt(2, 2, 5,
             0, 0, 0,
@@ -86,8 +94,9 @@ void Display() {
   // You can leave the axis in if you like.
   glDisable(GL_LIGHTING);
   glLineWidth(4);
-
+  glRotatef(angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
   DrawAxis();
+  DrawVertices();
   glEnable(GL_LIGHTING);
 
   glFlush();

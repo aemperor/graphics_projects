@@ -12,7 +12,7 @@ Mesh::Mesh() {
 // This will be called by the obj parser
 void Mesh::AddVertex(const Vec3f& v) {
   // TODO
-
+  vertices.push_back(v);
   // updates the bounding box
   _bb(v);
 }
@@ -20,6 +20,7 @@ void Mesh::AddVertex(const Vec3f& v) {
 // This will be called by the obj parser
 void Mesh::AddTextureVertex(const Vec3f& v) {
   // TODO
+  textures.push_back(v);
 }
 
 // p is the list of indices of vertices for this polygon.  For example,
@@ -30,7 +31,8 @@ void Mesh::AddTextureVertex(const Vec3f& v) {
 // actual vertices described above.
 void Mesh::AddPolygon(const std::vector<int>& p, const std::vector<int>& pt) {
   // TODO
-
+  polyVerts.push_back(p);
+  polyTexts.push_back(pt);
   // updates the poly2mat map
   _polygon2material.push_back(_cur_mtl);
 }
