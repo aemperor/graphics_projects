@@ -55,12 +55,15 @@ void PrintMatrix(GLfloat* m);
 Point2 mouse_pnt, mouse_curr;
 
 void DrawVertices() {
-  glColor3f(1.0, 0.0, 0.0);
+  glLineWidth(1);
+  glBegin(GL_LINE_LOOP);
   for (int i = 0; i < mesh.vertices.size(); ++i) {
+    glColor3f(1.0, 0.0, 0.0);
     glVertex3f(mesh.vertices[i][0],
                mesh.vertices[i][1],
                mesh.vertices[i][2]);
   }
+  glEnd();
 }
 
 void Display() {
