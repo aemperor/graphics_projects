@@ -38,6 +38,24 @@ void Mesh::AddPolygon(const std::vector<int>& p, const std::vector<int>& pt) {
 }
 
 // Computes a normal for each vertex.
+// normal of vertex = sum of normals for each incident polygon
 void Mesh::compute_normals() {
   // TODO don't forget to normalize your normals!
+  normals = std::vector<Vec3f>(vertices.size(), Vec3f());
+  for (int i = 0; i < polyVerts.size(); ++i) {
+      Vec3f v1 = Vec3f::makeVec(
+                 vertices[polyVerts[i][0]][0] - vertices[polyVerts[i][1]][0],
+                 vertices[polyVerts[i][0]][1] - vertices[polyVerts[i][1]][1],
+                 vertices[polyVerts[i][0]][2] - vertices[polyVerts[i][1]][2]);
+      Vec3f v2 = Vec3f::makeVec(
+                 vertices[polyVerts[i][2]][0] - vertices[polyVerts[i][1]][0],
+                 vertices[polyVerts[i][2]][1] - vertices[polyVerts[i][1]][1],
+                 vertices[polyVerts[i][2]][2] - vertices[polyVerts[i][1]][2]);
+      Vec3f polyNorm = v1 ^ v2;
+      polyNorm.unit();
+      for (int j = 0; j < polyVerts[i].size(); ++j) {
+          normals[polyVerts[i][j]] += polyNorm;
+          // cout << "normal " << normals[polyVerts[i][j]] << endl;
+      }
+  }
 }

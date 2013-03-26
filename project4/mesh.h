@@ -77,6 +77,7 @@ class Mesh {
   std::vector<Vec3f> textures;
   std::vector<vector<int> > polyVerts;
   std::vector<vector<int> > polyTexts;
+  std::vector<Vec3f> normals;
 
  private:
   // TODO add necessary data structures here

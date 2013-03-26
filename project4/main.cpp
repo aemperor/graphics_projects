@@ -27,7 +27,7 @@ Vec3f rotation_axis, start_vector, end_vector;
 GLfloat previous_rotation[16] = {1.0f, 0.0f, 0.0f, 0.0f,
                                   0.0f, 1.0f, 0.0f, 0.0f,
                                   0.0f, 0.0f, 1.0f, 0.0f,
-                                  0.0f, 0.0f, 0.0f, 0.0f};
+                                  0.0f, 0.0f, 0.0f, 1.0f};
 
 GLfloat current_rotation[16] = {1.0f, 0.0f, 0.0f, 0.0f,
                                   0.0f, 1.0f, 0.0f, 0.0f,
@@ -36,6 +36,7 @@ GLfloat current_rotation[16] = {1.0f, 0.0f, 0.0f, 0.0f,
 
 bool scene_lighting;
 bool isClicked = false;
+int times = 0;
 
 struct Point2 {
   GLfloat x, y;
@@ -67,6 +68,7 @@ void DrawVertices() {
 }
 
 void DrawPolygons() {
+  glColor3f(0.0, 0.0, 0.0);
   for (int i = 0; i < mesh.polyVerts.size(); ++i) {
     glBegin(GL_POLYGON);
     for (int j = 0; j < mesh.polyVerts[i].size(); ++j) {
@@ -78,8 +80,22 @@ void DrawPolygons() {
   }
 }
 
+void DrawNormals() {
+  for (int i = 0; i < mesh.normals.size(); ++i) {
+    glBegin(GL_LINES);
+    glVertex3f(mesh.vertices[i][0],
+               mesh.vertices[i][1],
+               mesh.vertices[i][2]);
+    glVertex3f(mesh.vertices[i][0] + mesh.normals[i][0],
+               mesh.vertices[i][1] + mesh.normals[i][1],
+               mesh.vertices[i][2] + mesh.normals[i][2]);
+  }
+  glEnd();
+}
+
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_LIGHTING);
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -88,30 +104,48 @@ void Display() {
   // TODO call gluLookAt such that mesh fits nicely in viewport.
   // mesh.bb() may be useful.
   glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-
-  cout << "matrix" << endl;
-  PrintMatrix(previous_rotation);
+  // glLoadIdentity();
+  if (times > 1) {
+    glLoadMatrixf(previous_rotation);
+    glRotatef(angle,
+              rotation_axis.x[0],
+              rotation_axis.x[1],
+              rotation_axis.x[2]);
+    glGetFloatv(GL_MODELVIEW_MATRIX, previous_rotation);
+    times += 1;
+  } else {
+    glLoadIdentity();
+    gluLookAt(2, 2, 5,
+              0, 0, 0,
+              0, 1, 0);
+    times += 1;
+    glGetFloatv(GL_MODELVIEW_MATRIX, previous_rotation);
+  }
   // glLoadMatrixf(previous_rotation);
-  cout << "angle" << angle << endl;
+
+  // cout << "previous_rotation" << endl;
+  // PrintMatrix(previous_rotation);
+  // glLoadMatrixf(previous_rotation);
+  // cout << "angle" << angle << endl;
   // glRotatef(angle, rotation_axis.x[0],
   // rotation_axis.x[1], rotation_axis.x[2]);
-
-  gluLookAt(2, 2, 5,
-            0, 0, 0,
-            0, 1, 0);
 
 
   // TODO set up lighting, material properties and render mesh.
   // Be sure to call glEnable(GL_RESCALE_NORMAL) so your normals
   // remain normalized throughout transformations.
+  // glEnable(GL_RESCALE_NORMAL);
+  // glDisable(GL_RESCALE_NORMAL);
 
   // You can leave the axis in if you like.
   glDisable(GL_LIGHTING);
   glLineWidth(4);
-  glRotatef(angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
+  // glRotatef(
+  // angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
+  // glGetFloatv(GL_MODELVIEW_MATRIX, previous_rotation);
   DrawAxis();
   // DrawVertices();
+  // DrawNormals();
   DrawPolygons();
   glEnable(GL_LIGHTING);
 
@@ -176,7 +210,7 @@ void Init() {
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-
+  texture_ids = new GLuint[1];
   gluPerspective(40.0, window_aspect, 1, 1500);
 }
 
@@ -219,9 +253,10 @@ void MouseButton(int button, int state, int x, int y) {
     if (state == GLUT_DOWN) {
       isClicked = true;
       mouse_pnt = Point2(x, window_height - y);
-      memcpy(previous_rotation, current_rotation, sizeof(current_rotation));
+      // memcpy(previous_rotation, current_rotation, sizeof(current_rotation));
     } else {
       isClicked = false;
+      // glGetFloatv(GL_MODELVIEW_MATRIX, previous_rotation);
     }
   }
   glutPostRedisplay();
@@ -230,10 +265,10 @@ void MouseButton(int button, int state, int x, int y) {
 void MouseMotion(int x, int y) {
   // TODO implement arc ball and zoom
   if (isClicked) {
-    glPushMatrix();
-    MultMatrix(previous_rotation);
-    glGetFloatv(GL_MODELVIEW_MATRIX, current_rotation);
-    glPopMatrix();
+    // glPushMatrix();
+    // MultMatrix(previous_rotation);
+    // glGetFloatv(GL_MODELVIEW_MATRIX, current_rotation);
+    // glPopMatrix();
     mouse_curr.x = x;
     mouse_curr.y = window_height - y;
 
