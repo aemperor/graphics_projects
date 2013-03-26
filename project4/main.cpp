@@ -66,6 +66,18 @@ void DrawVertices() {
   glEnd();
 }
 
+void DrawPolygons() {
+  for (int i = 0; i < mesh.polyVerts.size(); ++i) {
+    glBegin(GL_POLYGON);
+    for (int j = 0; j < mesh.polyVerts[i].size(); ++j) {
+      glVertex3f(mesh.vertices[mesh.polyVerts[i][j]][0],
+                 mesh.vertices[mesh.polyVerts[i][j]][1],
+                 mesh.vertices[mesh.polyVerts[i][j]][2]);
+    }
+    glEnd();
+  }
+}
+
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -99,7 +111,8 @@ void Display() {
   glLineWidth(4);
   glRotatef(angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
   DrawAxis();
-  DrawVertices();
+  // DrawVertices();
+  DrawPolygons();
   glEnable(GL_LIGHTING);
 
   glFlush();
