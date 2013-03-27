@@ -174,7 +174,6 @@ void Init() {
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  texture_ids = new GLuint[1];
   gluPerspective(40.0, window_aspect, 1, 1500);
 }
 
