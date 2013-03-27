@@ -51,10 +51,10 @@ void DrawVertices() {
 }
 
 void DrawPolygons() {
-  glColor3f(0.0, 0.0, 0.0);
   for (int i = 0; i < mesh.polyVerts.size(); ++i) {
     glBegin(GL_POLYGON);
     for (int j = 0; j < mesh.polyVerts[i].size(); ++j) {
+      glColor3f(0.0, 0.0 + j, 0.0 + i + j);
       glVertex3f(mesh.vertices[mesh.polyVerts[i][j]][0],
                  mesh.vertices[mesh.polyVerts[i][j]][1],
                  mesh.vertices[mesh.polyVerts[i][j]][2]);
