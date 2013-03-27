@@ -21,8 +21,8 @@ ifeq ($(UNAME), Darwin)
 CC = g++
 CFLAGS = -Wall -g -D__MAC__
 INCLUDE = -I/opt/local/include
-LIBDIR = -L/lusr/X11/lib -L/usr/local/include
-LIBS = -framework OpenGL -framework GLUT -ljpeg -ll
+LIBDIR = -L/lusr/X11/lib -L/opt/local/lib
+LIBS = -framework OpenGL -framework GLUT -ljpeg
 endif
 
 ###########################################################
