@@ -36,38 +36,9 @@ float rotationM[] = {
   0.0f, 0.0f, 1.0f, 0.0f,
   0.0f, 0.0f, 0.0f, 1.0f
 };
-float angle = 0.0;
-Vec3f rotation_axis, start_vector, end_vector;
-GLfloat previous_rotation[16] = {1.0f, 0.0f, 0.0f, 0.0f,
-                                  0.0f, 1.0f, 0.0f, 0.0f,
-                                  0.0f, 0.0f, 1.0f, 0.0f,
-                                  0.0f, 0.0f, 0.0f, 1.0f};
-
-GLfloat current_rotation[16] = {1.0f, 0.0f, 0.0f, 0.0f,
-                                  0.0f, 1.0f, 0.0f, 0.0f,
-                                  0.0f, 0.0f, 1.0f, 0.0f,
-                                  0.0f, 0.0f, 0.0f, 0.0f};
 
 bool scene_lighting;
 bool isClicked = false;
-int times = 0;
-
-struct Point2 {
-  GLfloat x, y;
-  Point2() {
-    x = 0;
-    y = 0;
-  }
-  Point2(GLfloat _x, GLfloat _y) {
-    x = _x;
-    y = _y;
-  }
-};
-
-void PrintMatrix();
-void PrintMatrix(GLfloat* m);
-
-Point2 mouse_pnt, mouse_curr;
 
 void DrawVertices() {
   glLineWidth(1);
@@ -128,15 +99,6 @@ void Display() {
   glMultMatrixf(rotationM);
   float s = scale + scaleDelta;
   glScalef(s, s, s);
-  // glLoadMatrixf(previous_rotation);
-
-  // cout << "previous_rotation" << endl;
-  // PrintMatrix(previous_rotation);
-  // glLoadMatrixf(previous_rotation);
-  // cout << "angle" << angle << endl;
-  // glRotatef(angle, rotation_axis.x[0],
-  // rotation_axis.x[1], rotation_axis.x[2]);
-
 
   // TODO set up lighting, material properties and render mesh.
   // Be sure to call glEnable(GL_RESCALE_NORMAL) so your normals
@@ -147,9 +109,6 @@ void Display() {
   // You can leave the axis in if you like.
   glDisable(GL_LIGHTING);
   glLineWidth(4);
-  // glRotatef(
-  // angle, rotation_axis.x[0], rotation_axis.x[1], rotation_axis.x[2]);
-  // glGetFloatv(GL_MODELVIEW_MATRIX, previous_rotation);
   DrawAxis();
   // DrawVertices();
   // DrawNormals();
