@@ -11,8 +11,10 @@
 #include "./texture.h"
 
 #define ARCBALL_RADIUS 1
+#define PI 3.14159265f
 
 using namespace std;
+
 
 Mesh mesh;
 
@@ -22,6 +24,18 @@ GLuint* texture_ids;
 int window_width = 800, window_height = 600;
 float window_aspect = window_width / static_cast<float>(window_height);
 
+const Vec3f O = {{0, 0, 0}};
+float theta = 0;
+Vec3f start = {{0, 0, 0}}, end = {{0, 0, 0}}, axis = {{0, 0, 0}};
+bool isRotate;
+float scale = 1.0f, scaleDelta = 0.0f;
+
+float rotationM[] = {
+  1.0f, 0.0f, 0.0f, 0.0f,
+  0.0f, 1.0f, 0.0f, 0.0f,
+  0.0f, 0.0f, 1.0f, 0.0f,
+  0.0f, 0.0f, 0.0f, 1.0f
+};
 float angle = 0.0;
 Vec3f rotation_axis, start_vector, end_vector;
 GLfloat previous_rotation[16] = {1.0f, 0.0f, 0.0f, 0.0f,
@@ -104,23 +118,16 @@ void Display() {
   // TODO call gluLookAt such that mesh fits nicely in viewport.
   // mesh.bb() may be useful.
   glMatrixMode(GL_MODELVIEW);
-  // glLoadIdentity();
-  if (times > 1) {
-    glLoadMatrixf(previous_rotation);
-    glRotatef(angle,
-              rotation_axis.x[0],
-              rotation_axis.x[1],
-              rotation_axis.x[2]);
-    glGetFloatv(GL_MODELVIEW_MATRIX, previous_rotation);
-    times += 1;
-  } else {
-    glLoadIdentity();
-    gluLookAt(2, 2, 5,
-              0, 0, 0,
-              0, 1, 0);
-    times += 1;
-    glGetFloatv(GL_MODELVIEW_MATRIX, previous_rotation);
-  }
+  glLoadIdentity();
+  gluLookAt(2, 2, 5,
+            0, 0, 0,
+            0, 1, 0);
+
+  //  Arc ball and zoom
+  glRotatef(theta, axis[0], axis[1], axis[2]);
+  glMultMatrixf(rotationM);
+  float s = scale + scaleDelta;
+  glScalef(s, s, s);
   // glLoadMatrixf(previous_rotation);
 
   // cout << "previous_rotation" << endl;
@@ -247,47 +254,88 @@ Vec3f make_arcball_vector(int x, int y) {
     return vector;
 }
 
+Vec3f arcBall(int x, int y) {
+  float xNorm = 2.0f * x / window_width - 1;
+  float yNorm = 2.0f * y / window_height - 1;
+  float zNorm;
+
+  float distance = xNorm * xNorm + yNorm * yNorm;  // distance squared
+  if (distance > 1) {  // Outside unit circle, need to move it
+    distance = 1;
+    float norm = 1.0f / sqrt(distance);  // used to normalize x,y
+    xNorm *= norm;
+    yNorm *= norm;
+  }
+  zNorm = sqrt(1 - distance);
+
+  return Vec3f::makeVec(xNorm, yNorm, zNorm);
+}
+
+float magnitude3v(Vec3f v) {
+  return sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+}
+
+void arcDrag(int x, int y) {
+  end = arcBall(x, y);
+  axis = start^end;
+  float magnitude = magnitude3v(start) * magnitude3v(end);
+  if (magnitude > 0) {
+    theta = (start * end) / magnitude;
+    theta = acos(theta) * 180/PI;
+  } else {
+    theta = 0;
+  }
+}
+
+void saveRotation() {
+  glPushMatrix();
+  glLoadIdentity();
+  glRotatef(theta, axis[0], axis[1], axis[2]);
+  glMultMatrixf(rotationM);
+  glGetFloatv(GL_MODELVIEW_MATRIX, rotationM);
+  axis.zero();
+  theta = 0;
+  glPopMatrix();
+}
+
+// Dragging bottom to top = 100% increase
+void zoom(int y) {
+  float difference = y - start[1];
+  scaleDelta = difference/window_height;
+}
+
+void saveZoom() {
+  scale += scaleDelta;
+  scaleDelta = 0;
+}
+
 void MouseButton(int button, int state, int x, int y) {
-  // TODO implement arc ball and zoom
-  if (button == GLUT_LEFT_BUTTON) {
-    if (state == GLUT_DOWN) {
-      isClicked = true;
-      mouse_pnt = Point2(x, window_height - y);
-      // memcpy(previous_rotation, current_rotation, sizeof(current_rotation));
+  y = window_height - y - 1;
+  if (button == 0) {
+    isRotate = true;
+    if (state == 0) {  // Mouse pressed
+      start = arcBall(x, y);
+    } else {  // Mouse released
+      saveRotation();
+    }
+  } else if (button == 2) {
+    isRotate = false;
+    if (state == 0) {
+      start = Vec3f::makeVec(x, y, 0);
     } else {
-      isClicked = false;
-      // glGetFloatv(GL_MODELVIEW_MATRIX, previous_rotation);
+      saveZoom();
     }
   }
   glutPostRedisplay();
 }
 
 void MouseMotion(int x, int y) {
-  // TODO implement arc ball and zoom
-  if (isClicked) {
-    // glPushMatrix();
-    // MultMatrix(previous_rotation);
-    // glGetFloatv(GL_MODELVIEW_MATRIX, current_rotation);
-    // glPopMatrix();
-    mouse_curr.x = x;
-    mouse_curr.y = window_height - y;
-
-    start_vector = make_arcball_vector(mouse_pnt.x, mouse_pnt.y);
-    end_vector   = make_arcball_vector(mouse_curr.x, mouse_curr.y);
-
-    angle = acos(min(1.0f, start_vector * end_vector)) * 180 / M_PI;
-    rotation_axis = start_vector ^ end_vector;
-
-    start_vector = end_vector;
-
-    /*
-    cout << "start: " << start_vector << "\n";
-    cout << "end: "   << end_vector << "\n";
-    cout << "dot: "   << start_vector * end_vector << "\n";
-    cout << "angle: " << angle << " degrees\n" << endl;
-    */
+  y = window_height - y - 1;
+  if (isRotate) {
+    arcDrag(x, y);
+  } else {
+    zoom(y);
   }
-
   glutPostRedisplay();
 }
 
