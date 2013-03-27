@@ -38,7 +38,6 @@ float rotationM[] = {
 };
 
 bool scene_lighting;
-bool isClicked = false;
 
 void DrawVertices() {
   glLineWidth(1);
@@ -196,21 +195,6 @@ void DrawAxis() {
   glVertex3fv(c.x);
   glVertex3fv((c+Z).x);
   glEnd();
-}
-
-Vec3f make_arcball_vector(int x, int y) {
-    Vec3f vector = Vec<float, 3u>::makeVec((2.0 * x / window_width) - 1.0,
-                                           (2.0 * y / window_height) - 1.0,
-                                            0.0);
-    float length = sqrt(vector.x[0] * vector.x[0] +
-                        vector.x[1] * vector.x[1]);
-    if (length <= ARCBALL_RADIUS*ARCBALL_RADIUS) {
-      vector.x[2] = sqrt(1 - length);
-    } else {  // nearest point
-        vector = vector.unit();
-    }
-
-    return vector;
 }
 
 Vec3f arcBall(int x, int y) {
