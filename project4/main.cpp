@@ -64,8 +64,8 @@ void DrawPolygons() {
 }
 
 void DrawNormals() {
+  glBegin(GL_LINES);
   for (int i = 0; i < mesh.normals.size(); ++i) {
-    glBegin(GL_LINES);
     glVertex3f(mesh.vertices[i][0],
                mesh.vertices[i][1],
                mesh.vertices[i][2]);
