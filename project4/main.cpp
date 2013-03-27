@@ -11,7 +11,6 @@
 #include "./texture.h"
 
 #define ARCBALL_RADIUS 1
-#define PI 3.14159265f
 
 using namespace std;
 
@@ -224,7 +223,7 @@ void arcDrag(int x, int y) {
   float magnitude = magnitude3v(start) * magnitude3v(end);
   if (magnitude > 0) {
     theta = (start * end) / magnitude;
-    theta = acos(theta) * 180/PI;
+    theta = acos(theta) * 180/M_PI;
   } else {
     theta = 0;
   }
