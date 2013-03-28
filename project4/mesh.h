@@ -63,6 +63,10 @@ class Mesh {
     return _polygon2material[polygon_idx];
   }
 
+  int polygon2materialSize() {
+    return _polygon2material.size();
+  }
+
   const Material& material(int i) const { return _materials[i]; }
 
   Material& material(int i) { return _materials[i]; }

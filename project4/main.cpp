@@ -38,6 +38,22 @@ float rotationM[] = {
 
 bool scene_lighting;
 
+Vec3f eye = {2.0f, 2.0f, 5.0f};
+Vec3f center = {0.0f, 0.0f, 0.0f};
+Vec3f up = {0.0f, 1.0f, 0.0f};
+
+Vec3f whiteSpecularLight = {1.0f, 1.0f, 1.0f};
+Vec3f whiteDiffuseLight = {1.0f, 1.0f, 1.0f};
+Vec3f blackAmbientLight = {0.0f, 0.0f, 0.0f};
+
+void Light() {
+  GLfloat position[] = {0.0f, 0.0f, 10.0f};
+  glLightfv(GL_LIGHT0, GL_POSITION, position);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight.x);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuseLight.x);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight.x);
+}
+
 void DrawVertices() {
   glLineWidth(1);
   glBegin(GL_LINE_LOOP);
@@ -51,19 +67,18 @@ void DrawVertices() {
 }
 
 void DrawPolygons() {
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  // cout << mesh.polygon2materialSize() << endl;
+  // cout << mesh.num_materials() << endl;
   for (int i = 0; i < mesh.polyVerts.size(); ++i) {
-    glBegin(GL_POLYGON);
-    /*
-    int mat_idx = mesh.polygon2material(i);
+    int mat_idx = 0;
     Material m = mesh.material(mat_idx);
-    */
+    glBegin(GL_POLYGON);
     for (int j = 0; j < mesh.polyVerts[i].size(); ++j) {
-      /*
       glMaterialfv(GL_FRONT, GL_AMBIENT, m.ambient().x);
       glMaterialfv(GL_FRONT, GL_DIFFUSE, m.diffuse().x);
       glMaterialfv(GL_FRONT, GL_SPECULAR, m.specular().x);
-      */
-      glColor3f(0.0, 0.0 + j, 0.0 + i + j);
       glVertex3f(mesh.vertices[mesh.polyVerts[i][j]][0],
                  mesh.vertices[mesh.polyVerts[i][j]][1],
                  mesh.vertices[mesh.polyVerts[i][j]][2]);
@@ -97,30 +112,27 @@ void Display() {
   // mesh.bb() may be useful.
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  gluLookAt(2, 2, 5,
-            0, 0, 0,
-            0, 1, 0);
+  gluLookAt(eye[0], eye[1], eye[2],
+            center[0], center[1], center[2],
+            up[0], up[1], up[2]);
 
+  Light();
   //  Arc ball and zoom
   glRotatef(theta, axis[0], axis[1], axis[2]);
   glMultMatrixf(rotationM);
-  float s = scale + scaleDelta;
-  glScalef(s, s, s);
-
   // TODO set up lighting, material properties and render mesh.
   // Be sure to call glEnable(GL_RESCALE_NORMAL) so your normals
   // remain normalized throughout transformations.
-  // glEnable(GL_RESCALE_NORMAL);
-  // glDisable(GL_RESCALE_NORMAL);
+  glEnable(GL_RESCALE_NORMAL);
 
   // You can leave the axis in if you like.
-  glDisable(GL_LIGHTING);
+  // glDisable(GL_LIGHTING);
   glLineWidth(4);
   DrawAxis();
-  // DrawVertices();
-  // DrawNormals();
   DrawPolygons();
-  glEnable(GL_LIGHTING);
+  // glEnable(GL_LIGHTING);
+  glDisable(GL_RESCALE_NORMAL);
+  glDisable(GL_LIGHTING);
 
   glFlush();
   glutSwapBuffers();
@@ -251,7 +263,15 @@ void saveRotation() {
 // Dragging bottom to top = 100% increase
 void zoom(int y) {
   float difference = y - start[1];
-  scaleDelta = difference/window_height;
+  if (difference > 0) {
+    eye[0] = eye[0]*0.95;
+    eye[1] = eye[1]*0.95;
+    eye[2] = eye[2]*0.95;
+  } else if (difference < 0) {
+    eye[0] = eye[0]*1.05;
+    eye[1] = eye[1]*1.05;
+    eye[2] = eye[2]*1.05;
+  }
 }
 
 void saveZoom() {
