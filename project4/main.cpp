@@ -53,7 +53,16 @@ void DrawVertices() {
 void DrawPolygons() {
   for (int i = 0; i < mesh.polyVerts.size(); ++i) {
     glBegin(GL_POLYGON);
+    /*
+    int mat_idx = mesh.polygon2material(i);
+    Material m = mesh.material(mat_idx);
+    */
     for (int j = 0; j < mesh.polyVerts[i].size(); ++j) {
+      /*
+      glMaterialfv(GL_FRONT, GL_AMBIENT, m.ambient().x);
+      glMaterialfv(GL_FRONT, GL_DIFFUSE, m.diffuse().x);
+      glMaterialfv(GL_FRONT, GL_SPECULAR, m.specular().x);
+      */
       glColor3f(0.0, 0.0 + j, 0.0 + i + j);
       glVertex3f(mesh.vertices[mesh.polyVerts[i][j]][0],
                  mesh.vertices[mesh.polyVerts[i][j]][1],
