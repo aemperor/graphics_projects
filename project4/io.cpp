@@ -162,7 +162,8 @@ void ParseObj(const string& fn, Mesh& mesh) {
       } else if (t == "vt") {
         float v[3];
         for (int i = 0; i < 3; ++i) {
-            if (values.size() < 3)
+            //  Added to allow input to work with blender
+            if (i >= values.size())
               v[i] = 0;
             else
               v[i] = atof(values[i]);
