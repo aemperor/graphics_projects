@@ -374,6 +374,11 @@ int main(int argc, char *argv[]) {
     cout << endl;
     return 0;
   }
+  // menu commands
+  cout << "w - move the object away" << endl;
+  cout << "s - move the object closer" << endl;
+  cout << "a - move the object to the right" << endl;
+  cout << "d - move the object to the left" << endl;
 
   // Initialize GLUT
   glutInit(&argc, argv);
