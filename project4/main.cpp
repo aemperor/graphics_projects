@@ -346,11 +346,11 @@ void Keyboard(unsigned char key, int x, int y) {
     eye[2] = eye[2] + 1;
     center[2] = center[2] + 1;
     break;
-  case 'a':
+  case 'd':
     eye[0] = eye[0] - 1;
     center[0] = center[0] - 1;
     break;
-  case 'd':
+  case 'a':
     eye[0] = eye[0] + 1;
     center[0] = center[0] + 1;
     break;
