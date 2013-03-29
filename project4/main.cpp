@@ -135,21 +135,25 @@ void Display() {
             up[0], up[1], up[2]);
   if (!scene_lighting)
     Light();
+
+
   //  Arc ball and zoom
   glRotatef(theta, axis[0], axis[1], axis[2]);
   glMultMatrixf(rotationM);
-  if (!scene_lighting)
-      // Light();
+  glTranslatef(
+             -mesh.bb().center()[0],
+             -mesh.bb().center()[1],
+             -mesh.bb().center()[2]);
   // TODO set up lighting, material properties and render mesh.
   // Be sure to call glEnable(GL_RESCALE_NORMAL) so your normals
   // remain normalized throughout transformations.
 
   // You can leave the axis in if you like.
   glDisable(GL_RESCALE_NORMAL);
-  // glLineWidth(4);
-  // glDisable(GL_LIGHTING);
-  // DrawAxis();
-  // glEnable(GL_LIGHTING);
+  glLineWidth(4);
+  glDisable(GL_LIGHTING);
+  DrawAxis();
+  glEnable(GL_LIGHTING);
   // glColor3f(1.0f, 0.0f, 0.0f);
   // DrawNormals();
   // glColor3f(0.0f, 0.0f, 0.0f);
@@ -248,13 +252,10 @@ Vec3f arcBall(int x, int y) {
   float distance = xNorm * xNorm + yNorm * yNorm;  // distance squared
   if (distance > 1) {  // Outside unit circle, need to move it
     distance = 1;
-    float norm = 1.0f / sqrt(distance);  // used to normalize x,y
-    xNorm *= norm;
-    yNorm *= norm;
   }
   zNorm = sqrt(1 - distance);
 
-  return Vec3f::makeVec(xNorm, yNorm, zNorm);
+  return Vec3f::makeVec(xNorm, yNorm, zNorm).unit();
 }
 
 float magnitude3v(Vec3f v) {
@@ -266,7 +267,7 @@ void arcDrag(int x, int y) {
   axis = start^end;
   float magnitude = magnitude3v(start) * magnitude3v(end);
   if (magnitude > 0) {
-    theta = (start * end) / magnitude;
+    theta = ((O - end) * (O - start)) / magnitude;
     theta = acos(theta) * 180/M_PI;
   } else {
     theta = 0;
@@ -288,13 +289,13 @@ void saveRotation() {
 void zoom(int y) {
   float difference = y - start[1];
   if (difference > 0) {
-    eye[0] = eye[0]*0.95;
-    eye[1] = eye[1]*0.95;
-    eye[2] = eye[2]*0.95;
+    eye[0] = eye[0]*0.99;
+    eye[1] = eye[1]*0.99;
+    eye[2] = eye[2]*0.99;
   } else if (difference < 0) {
-    eye[0] = eye[0]*1.05;
-    eye[1] = eye[1]*1.05;
-    eye[2] = eye[2]*1.05;
+    eye[0] = eye[0]*1.01;
+    eye[1] = eye[1]*1.01;
+    eye[2] = eye[2]*1.01;
   }
 }
 
