@@ -72,20 +72,29 @@ void DrawVertices() {
   glEnd();
 }
 
+void SetMaterial(int id) {
+  Material m = mesh.material(id);
+  glMaterialfv(GL_FRONT, GL_AMBIENT, m.ambient().x);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, m.diffuse().x);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, m.specular().x);
+  glBindTexture(GL_TEXTURE_2D, m.texture_id());
+}
+
 void DrawPolygons() {
   glEnable(GL_TEXTURE_2D);
   for (int i = 0; i < mesh.polyVerts.size(); ++i) {
     int mat_idx = mesh.polygon2material(i);
-    Material m = mesh.material(mat_idx);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, m.ambient().x);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, m.diffuse().x);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, m.specular().x);
-    glBindTexture(GL_TEXTURE_2D, m.texture_id());
+    bool material = mat_idx != -1;
+    if (material)
+      SetMaterial(mat_idx);
+
     glBegin(GL_POLYGON);
     for (int j = 0; j < mesh.polyVerts[i].size(); ++j) {
-      glNormal3fv(mesh.normals[mesh.polyVerts[i][j]].unit().x);
-      glTexCoord2f(mesh.textures[mesh.polyTexts[i][j]][0],
+      if (material) {
+        glNormal3fv(mesh.normals[mesh.polyVerts[i][j]].unit().x);
+        glTexCoord2f(mesh.textures[mesh.polyTexts[i][j]][0],
                    mesh.textures[mesh.polyTexts[i][j]][1]);
+      }
       glVertex3f(mesh.vertices[mesh.polyVerts[i][j]][0],
                  mesh.vertices[mesh.polyVerts[i][j]][1],
                  mesh.vertices[mesh.polyVerts[i][j]][2]);
