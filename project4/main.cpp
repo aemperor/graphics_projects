@@ -52,6 +52,11 @@ void Light() {
   glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight.x);
   glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuseLight.x);
   glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight.x);
+
+  glLightfv(GL_LIGHT1, GL_POSITION, eye.x);
+  glLightfv(GL_LIGHT1, GL_AMBIENT, blackAmbientLight.x);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, whiteDiffuseLight.x);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, whiteSpecularLight.x);
 }
 
 void DrawVertices() {
