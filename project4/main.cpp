@@ -338,11 +338,11 @@ void MouseMotion(int x, int y) {
 
 void Keyboard(unsigned char key, int x, int y) {
   switch (key) {
-  case 'w':
+  case 's':
     eye[2] = eye[2] - 1;
     center[2] = center[2] - 1;
     break;
-  case 's':
+  case 'w':
     eye[2] = eye[2] + 1;
     center[2] = center[2] + 1;
     break;
