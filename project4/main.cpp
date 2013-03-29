@@ -132,8 +132,6 @@ void Display() {
   glLoadIdentity();
   gluPerspective(40.0, window_aspect, 1, 1500);
 
-  // TODO call gluLookAt such that mesh fits nicely in viewport.
-  // mesh.bb() may be useful.
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   gluLookAt(eye[0], eye[1], eye[2],
@@ -145,10 +143,6 @@ void Display() {
 
   //  Arc ball
   ArcBallRotate();
-
-  // TODO set up lighting, material properties and render mesh.
-  // Be sure to call glEnable(GL_RESCALE_NORMAL) so your normals
-  // remain normalized throughout transformations.
 
   glEnable(GL_RESCALE_NORMAL);
 
