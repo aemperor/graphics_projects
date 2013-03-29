@@ -58,9 +58,12 @@ turnin-verify:
 	turnin --verify vkeshari project4
 
 zip: viewer
-	zip -r viewer.zip Makefile bb.h check-code common.h cpplint.py io.cpp io.h \
-	main.cpp material.cpp material.h mesh.cpp mesh.h original.mtl original.obj \
-	original.png texture.cpp texture.h vec.h
+	mkdir turnin
+	cp Makefile bb.h check-code common.h cpplint.py io.cpp io.h main.cpp \
+		material.cpp material.h mesh.cpp mesh.h original.mtl original.obj \
+		original.png README.txt texture.cpp texture.h vec.h turnin
+	zip -r viewer.zip turnin
+	rm -r turnin
 
 clean:
 	rm -f viewer *.o
