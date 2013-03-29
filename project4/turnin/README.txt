@@ -18,3 +18,7 @@ w - move the object away
 s - move the object closer
 a - move the object to the right
 d - move the object to the left
+
+None of the group members had any previous experience in 3D modeling.
+The original.obj was created using Blender. The scene was also created
+using Blender.
