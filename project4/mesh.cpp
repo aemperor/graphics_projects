@@ -55,7 +55,6 @@ void Mesh::compute_normals() {
       polyNorm.unit();
       for (int j = 0; j < polyVerts[i].size(); ++j) {
           normals[polyVerts[i][j]] += polyNorm;
-          // cout << "normal " << normals[polyVerts[i][j]] << endl;
       }
   }
 }

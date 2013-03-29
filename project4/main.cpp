@@ -42,21 +42,22 @@ Vec3f eye = {2.0f, 2.0f, 5.0f};
 Vec3f center = {0.0f, 0.0f, 0.0f};
 Vec3f up = {0.0f, 1.0f, 0.0f};
 
-Vec3f whiteSpecularLight = {1.0f, 1.0f, 1.0f};
-Vec3f whiteDiffuseLight = {1.0f, 1.0f, 1.0f};
-Vec3f blackAmbientLight = {0.0f, 0.0f, 0.0f};
+GLfloat whiteSpecularLight[] = {0.5f, 0.5f, 0.5f, 1.0f};
+GLfloat whiteDiffuseLight[] = {0.8f, 0.8f, 0.8f, 1.0f};
+GLfloat blackAmbientLight[] = {0.0f, 0.0f, 0.0f, 1.0f};
 
 void Light() {
-  GLfloat position[] = {0.0f, 0.0f, 10.0f};
+  GLfloat position[] = {30.0f, 30.0f, -100.0f, 1.0f};
   glLightfv(GL_LIGHT0, GL_POSITION, position);
-  glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight.x);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuseLight.x);
-  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight.x);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuseLight);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight);
 
   glLightfv(GL_LIGHT1, GL_POSITION, eye.x);
-  glLightfv(GL_LIGHT1, GL_AMBIENT, blackAmbientLight.x);
-  glLightfv(GL_LIGHT1, GL_DIFFUSE, whiteDiffuseLight.x);
-  glLightfv(GL_LIGHT1, GL_SPECULAR, whiteSpecularLight.x);
+
+  glLightfv(GL_LIGHT1, GL_AMBIENT, blackAmbientLight);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, whiteDiffuseLight);
+  glLightfv(GL_LIGHT1, GL_SPECULAR, whiteSpecularLight);
 }
 
 void DrawVertices() {
@@ -72,24 +73,26 @@ void DrawVertices() {
 }
 
 void DrawPolygons() {
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
-  // cout << mesh.polygon2materialSize() << endl;
-  // cout << mesh.num_materials() << endl;
+  glEnable(GL_TEXTURE_2D);
   for (int i = 0; i < mesh.polyVerts.size(); ++i) {
-    int mat_idx = 0;
+    int mat_idx = mesh.polygon2material(i);
     Material m = mesh.material(mat_idx);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, m.ambient().x);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, m.diffuse().x);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, m.specular().x);
+    glBindTexture(GL_TEXTURE_2D, m.texture_id());
     glBegin(GL_POLYGON);
     for (int j = 0; j < mesh.polyVerts[i].size(); ++j) {
-      glMaterialfv(GL_FRONT, GL_AMBIENT, m.ambient().x);
-      glMaterialfv(GL_FRONT, GL_DIFFUSE, m.diffuse().x);
-      glMaterialfv(GL_FRONT, GL_SPECULAR, m.specular().x);
+      glNormal3fv(mesh.normals[mesh.polyVerts[i][j]].unit().x);
+      glTexCoord2f(mesh.textures[mesh.polyTexts[i][j]][0],
+                   mesh.textures[mesh.polyTexts[i][j]][1]);
       glVertex3f(mesh.vertices[mesh.polyVerts[i][j]][0],
                  mesh.vertices[mesh.polyVerts[i][j]][1],
                  mesh.vertices[mesh.polyVerts[i][j]][2]);
     }
     glEnd();
   }
+  glDisable(GL_TEXTURE_2D);
 }
 
 void DrawNormals() {
@@ -105,9 +108,18 @@ void DrawNormals() {
   glEnd();
 }
 
+Vec3f ambient = {1, 1 , 1};
+Vec3f specular = {0, 0, 0};
+Vec3f diffuse = {1, 1, 0};
+
+
 void Display() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  // glEnable(GL_LIGHT1);
+  if (scene_lighting)
+    Light();
 
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -117,26 +129,33 @@ void Display() {
   // mesh.bb() may be useful.
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
+  glEnable(GL_RESCALE_NORMAL);
   gluLookAt(eye[0], eye[1], eye[2],
             center[0], center[1], center[2],
             up[0], up[1], up[2]);
-
-  Light();
+  if (!scene_lighting)
+    Light();
   //  Arc ball and zoom
   glRotatef(theta, axis[0], axis[1], axis[2]);
   glMultMatrixf(rotationM);
+  if (!scene_lighting)
+      // Light();
   // TODO set up lighting, material properties and render mesh.
   // Be sure to call glEnable(GL_RESCALE_NORMAL) so your normals
   // remain normalized throughout transformations.
-  glEnable(GL_RESCALE_NORMAL);
 
   // You can leave the axis in if you like.
-  // glDisable(GL_LIGHTING);
-  glLineWidth(4);
-  DrawAxis();
-  DrawPolygons();
-  // glEnable(GL_LIGHTING);
   glDisable(GL_RESCALE_NORMAL);
+  // glLineWidth(4);
+  // glDisable(GL_LIGHTING);
+  // DrawAxis();
+  // glEnable(GL_LIGHTING);
+  // glColor3f(1.0f, 0.0f, 0.0f);
+  // DrawNormals();
+  // glColor3f(0.0f, 0.0f, 0.0f);
+  DrawPolygons();
+  glDisable(GL_LIGHT0);
+  // glDisable(GL_LIGHT1);
   glDisable(GL_LIGHTING);
 
   glFlush();
@@ -279,13 +298,8 @@ void zoom(int y) {
   }
 }
 
-void saveZoom() {
-  scale += scaleDelta;
-  scaleDelta = 0;
-}
-
 void MouseButton(int button, int state, int x, int y) {
-  y = window_height - y - 1;
+  y = window_height - y;
   if (button == 0) {
     isRotate = true;
     if (state == 0) {  // Mouse pressed
@@ -297,15 +311,13 @@ void MouseButton(int button, int state, int x, int y) {
     isRotate = false;
     if (state == 0) {
       start = Vec3f::makeVec(x, y, 0);
-    } else {
-      saveZoom();
     }
   }
   glutPostRedisplay();
 }
 
 void MouseMotion(int x, int y) {
-  y = window_height - y - 1;
+  y = window_height - y;
   if (isRotate) {
     arcDrag(x, y);
   } else {
@@ -316,11 +328,28 @@ void MouseMotion(int x, int y) {
 
 void Keyboard(unsigned char key, int x, int y) {
   switch (key) {
-    case 'q':
-    case 27:  // esc
-      exit(0);
-      break;
+  case 'w':
+    eye[2] = eye[2] - 1;
+    center[2] = center[2] - 1;
+    break;
+  case 's':
+    eye[2] = eye[2] + 1;
+    center[2] = center[2] + 1;
+    break;
+  case 'a':
+    eye[0] = eye[0] - 1;
+    center[0] = center[0] - 1;
+    break;
+  case 'd':
+    eye[0] = eye[0] + 1;
+    center[0] = center[0] + 1;
+    break;
+  case 'q':
+  case 27:  // esc
+    exit(0);
+    break;
   }
+  glutPostRedisplay();
 }
 
 int main(int argc, char *argv[]) {
