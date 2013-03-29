@@ -1,7 +1,7 @@
 # Blender v2.66 (sub 1) OBJ File: 'original.blend'
 # www.blender.org
 mtllib original.mtl
-#o pCone1
+o pCone1
 v 2.088804 1.747165 -2.937390
 v 2.071542 1.724630 -2.950870
 v 1.980347 1.764498 -2.937362
