@@ -162,7 +162,10 @@ void ParseObj(const string& fn, Mesh& mesh) {
       } else if (t == "vt") {
         float v[3];
         for (int i = 0; i < 3; ++i) {
-          v[i] = atof(values[i]);
+            if (values.size() < 3)
+              v[i] = 0;
+            else
+              v[i] = atof(values[i]);
         }
         mesh.AddTextureVertex(Vec3f::makeVec(v[0], v[1], v[2]));
       } else if (t == "f") {
