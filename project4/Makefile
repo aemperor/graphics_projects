@@ -48,5 +48,22 @@ texture.o: texture.cpp texture.h
 material.o: material.cpp material.h
 	${CC} ${CFLAGS} -c -o material.o $(INCLUDE) material.cpp
 
+turnin-list:
+	turnin --list vkeshari project4
+
+turnin-submit: zip
+	turnin --submit vkeshari project4 viewer.zip
+
+turnin-verify:
+	turnin --verify vkeshari project4
+
+zip: viewer
+	mkdir turnin
+	cp Makefile bb.h check-code common.h cpplint.py io.cpp io.h main.cpp \
+		material.cpp material.h mesh.cpp mesh.h original.mtl original.obj \
+		original.png README.txt texture.cpp texture.h vec.h turnin
+	zip -r viewer.zip turnin
+	rm -r turnin
+
 clean:
 	rm -f viewer *.o

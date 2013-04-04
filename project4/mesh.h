@@ -54,9 +54,6 @@ class Mesh {
     _materials[material_idx].set_texture(texture);
   }
 
-  // TODO - you don't need to modify this function, but it will be useful
-  // in your Display() function.
-  //
   // Given a polygon index, returns the index of the material
   // that should be used for that polygon.
   int polygon2material(int polygon_idx) const {
@@ -84,8 +81,6 @@ class Mesh {
   std::vector<Vec3f> normals;
 
  private:
-  // TODO add necessary data structures here
-
   std::vector<Material> _materials;
   std::vector<int> _polygon2material;
   int _cur_mtl;

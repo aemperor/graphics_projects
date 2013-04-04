@@ -11,7 +11,6 @@ Mesh::Mesh() {
 
 // This will be called by the obj parser
 void Mesh::AddVertex(const Vec3f& v) {
-  // TODO
   vertices.push_back(v);
   // updates the bounding box
   _bb(v);
@@ -19,7 +18,6 @@ void Mesh::AddVertex(const Vec3f& v) {
 
 // This will be called by the obj parser
 void Mesh::AddTextureVertex(const Vec3f& v) {
-  // TODO
   textures.push_back(v);
 }
 
@@ -30,7 +28,6 @@ void Mesh::AddTextureVertex(const Vec3f& v) {
 // pt is the list of texture indices for this polygon, similar to the
 // actual vertices described above.
 void Mesh::AddPolygon(const std::vector<int>& p, const std::vector<int>& pt) {
-  // TODO
   polyVerts.push_back(p);
   polyTexts.push_back(pt);
   // updates the poly2mat map
@@ -40,7 +37,6 @@ void Mesh::AddPolygon(const std::vector<int>& p, const std::vector<int>& pt) {
 // Computes a normal for each vertex.
 // normal of vertex = sum of normals for each incident polygon
 void Mesh::compute_normals() {
-  // TODO don't forget to normalize your normals!
   normals = std::vector<Vec3f>(vertices.size(), Vec3f());
   for (int i = 0; i < polyVerts.size(); ++i) {
       Vec3f v1 = Vec3f::makeVec(

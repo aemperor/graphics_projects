@@ -1,3 +1,0 @@
-#! /bin/bash
-
-./cpplint.py --filter=-readability/todo,-readability/streams,-runtime/threadsafe_fn,-legal,-build/namespaces,-build/header_guard $@
