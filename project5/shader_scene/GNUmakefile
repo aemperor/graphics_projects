@@ -72,6 +72,32 @@ CXXFLAGS   += -I../glew/include
 DEPEND_FILES = $(OBJS:%.o=%.d)
 DEPEND_OPTS = -MMD
 
+####################################
+# Added for Mac
+UNAME:=$(shell uname)
+ifeq ($(UNAME), Darwin)
+CC = gcc
+CXX = g++
+CFLAGS     += -Wall -g - D__MAC__ 
+CFLAGS     += -Wstrict-aliasing=1 -Wno-sign-compare $(DEBUG_OPT) $(OPT_OPT)
+CXXFLAGS   += -Wall -Wno-strict-aliasing -Wno-sign-compare $(DEBUG_OPT) $(OPT_OPT)
+CFLAGS     += -DGLEW_STATIC
+CFLAGS     += -I.
+CXXFLAGS   += -I.
+CFLAGS     += -I"$(CG4CPP)/include"
+CXXFLAGS   += -I"$(CG4CPP)/include"
+CFLAGS     += -I"$(BOOST)"
+CXXFLAGS   += -I"$(BOOST)"
+CXXFLAGS   += -DGLEW_STATIC
+CFLAGS     += -I../glew/include
+CXXFLAGS   += -I../glew/include
+INCLUDE = -I/opt/local/include
+LIBDIR = -L/lusr/X11/lib -L/opt/local/lib
+LIBS = -framework OpenGL -framework GLUT -ljpeg -lglew
+endif
+
+####################################
+
 ifeq ($(UNAME), Darwin)
   CLINKFLAGS += -L/Developer/SDKs/MacOSX10.5.sdk/usr/X11/lib
   CLINKFLAGS += -framework GLUT
