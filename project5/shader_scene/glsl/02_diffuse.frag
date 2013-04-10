@@ -22,7 +22,6 @@ void main()
   float theta = normalMapTexCoord[0];
   float phi = normalMapTexCoord[1];
 
-  // not sure if z should be 0.0 or 1.0
   vec3 gradientU = vec3(cos(theta), sin(phi), 0.0);  
   vec3 tangent = normalize(gradientU);
   vec3 gradientV = vec3(cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi));
@@ -31,12 +30,9 @@ void main()
   vec3 binormal = cross(normal2surface, tangent);
   mat3 M = mat3(tangent, binormal, normal2surface);
 
-  vec3 lightSurface = normalize(inverse(M) * lightDirection);
+  vec3 lightSurface = normalize(lightDirection * inverse(M));
   float diffuseCoeff = max(lightSurface[2], 0.0); // z component
 
   gl_FragColor = vec4((diffuseCoeff * LMd) + LMa);
 }
 
-// diff((((R+ r*cos(phi))*cos(theta)), ((R + r*(cos(phi)))*sin(theta)), sin(phi)), r)
-
-// diff((((R+ r*cos(phi))*cos(theta)), ((R + r*(cos(phi)))*sin(theta)), sin(phi)), R)
