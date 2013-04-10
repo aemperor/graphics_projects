@@ -27,7 +27,7 @@ void main()
   gl_Position = gl_ModelViewProjectionMatrix * vec4(x, y, z, 1);
   
   eyeDirection = vec3(0);  // XXX fix me
-  lightDirection = vec3(0);  // XXX fix me
+  lightDirection = lightPosition - gl_Position;
   halfAngle = vec3(0);  // XXX fix me
   c0 = vec3(0);  // XXX fix me
   c1 = vec3(0);  // XXX fix me
