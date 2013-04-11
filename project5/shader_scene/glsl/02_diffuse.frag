@@ -19,19 +19,10 @@ varying vec3 c0, c1, c2;
 
 void main()
 {
-  float theta = normalMapTexCoord[0];
-  float phi = normalMapTexCoord[1];
+  mat3 M = mat3(c0, c1, c2);
 
-  vec3 gradientU = vec3(cos(theta), sin(phi), 0.0);  
-  vec3 tangent = normalize(gradientU);
-  vec3 gradientV = vec3(cos(theta)*cos(phi), sin(theta)*cos(phi), sin(phi));
-  vec3 normal2surface = cross(normalize(gradientU), 
-                              normalize(gradientV));
-  vec3 binormal = cross(normal2surface, tangent);
-  mat3 M = mat3(tangent, binormal, normal2surface);
-
-  vec3 lightSurface = normalize(lightDirection * inverse(M));
-  float diffuseCoeff = max(lightSurface[2], 0.0); // z component
+  vec3 lightSurface = normalize(inverse(M) * lightDirection);
+  float diffuseCoeff = max(lightSurface[2], 0.0); // use z component
 
   gl_FragColor = vec4((diffuseCoeff * LMd) + LMa);
 }
