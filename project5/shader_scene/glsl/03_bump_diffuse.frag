@@ -19,5 +19,13 @@ varying vec3 c0, c1, c2;
 
 void main()
 {
-  gl_FragColor = vec4(1,0,0,1);  // XXX fix me
+  // sample normalMap and expand range from [0..1] to [-1..+1]
+  vec4 normals = (texture2D(normalMap, normalMapTexCoord) * 2) - 1;
+
+  mat3 M = mat3(c0, c1, c2);
+
+  vec3 lightSurface = normalize(inverse(M) * lightDirection);
+  float diffuseCoeff = max(dot(normals, lightSurface[2]), 0.0); // use z component
+
+  gl_FragColor = vec4((diffuseCoeff * LMd) + LMa);
 }
