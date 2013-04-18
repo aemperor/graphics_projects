@@ -21,7 +21,7 @@ void main()
 {
   mat3 M = mat3(c0, c1, c2);
 
-  vec3 lightSurface = normalize(inverse(M) * lightDirection);
+  vec3 lightSurface = normalize(lightDirection * inverse(M));
   float diffuseCoeff = max(lightSurface[2], 0.0); // use z component
 
   gl_FragColor = vec4((diffuseCoeff * LMd) + LMa);

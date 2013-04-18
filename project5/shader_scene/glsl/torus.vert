@@ -30,7 +30,7 @@ void main()
   
   eyeDirection = vec3(0);  // XXX fix me
   lightDirection = lightPosition - vec3(x, y, z);
-  halfAngle = vec3(0);  // XXX fix me
+  halfAngle = normalize((lightPosition + gl_Position)/2.0);
   
   vec3 gradientU = vec3((-1.0*pi2*sin(pi2*theta)) * (M + N*cos(pi2*phi)), 
                          pi2*cos(pi2*theta) * (M+N*cos(pi2*phi)), 
