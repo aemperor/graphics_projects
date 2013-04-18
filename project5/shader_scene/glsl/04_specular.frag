@@ -21,8 +21,16 @@ void main()
 {
   mat3 M = mat3(c0, c1, c2);
 
-  vec3 halfAngleSurface = normalize(inverse(M) * halfAngle);
-  float specularCoeff = max(shininess, 0.0);
+  halfAngle = (lightDirection + eyeDirection)/2.0;
+  vec3 halfAngleSurface = halfAngle * M;
+
+  vec3 lightSurface = normalize(lightDirection * M);
+  float diffuseCoeff = max(lightSurface[2], 0.0); // use z component
+
+  vec3 specularContribution = halfAngleSurface[2];
+  float specularCoeff = max(pow(specularContribution, shininess), 0.0);
+  if (diffuseCoeff == 0.0)
+    specularCoeff = 0.0;
   
   gl_FragColor = vec4(specularCoeff*LMs);
 }

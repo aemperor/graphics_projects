@@ -30,7 +30,6 @@ void main()
 
   eyeDirection = normalize(eyePosition - vec3(x, y, z));  // XXX fix me
   lightDirection = normalize(lightPosition - vec3(x, y, z));
-  vec3 halfAngle = normalize((lightDirection + eyeDirection)/2.0);
 
   vec3 gradientU = normalize(vec3(-(M + N*cos(phi))*sin(theta),
                         (M + N*cos(phi))*cos(theta),
@@ -41,10 +40,9 @@ void main()
                         N*cos(phi)));
 
   c0 = gradientU;  // tangent
-  c1 = gradientV;
+  c1 = gradientV; // binormal
   c2 = normalize(cross(gradientU,  // normal
              gradientV));
-  //c1 = normalize(cross(c2, c0));  // binormal
 }
 // Wolfram
 // x
