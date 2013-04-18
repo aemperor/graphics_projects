@@ -15,42 +15,44 @@ varying vec3 c0, c1, c2;
 void main()
 {
   const float pi2 = 6.28318530;  // 2 times Pi
-  normalMapTexCoord = vec2(-6.0*parametric[0], -2.0*parametric[1]);
+  normalMapTexCoord = vec2(6.0*parametric[0], -2.0*parametric[1]);
 
   float M = torusInfo[0];
   float N = torusInfo[1];
-  float theta = parametric[0];
-  float phi = parametric[1];
-  
-  float coeff = M + N*cos(phi*pi2);
-  float y = coeff*sin(theta*pi2);
-  float x = coeff*cos(theta*pi2);
-  float z = N*sin(phi*pi2);
-  gl_Position = gl_ModelViewProjectionMatrix * vec4(x, y, z, 1);
-  
-  eyeDirection = vec3(0);  // XXX fix me
-  lightDirection = lightPosition - vec3(x, y, z);
-  halfAngle = normalize((lightPosition + gl_Position)/2.0);
-  
-  vec3 gradientU = vec3((-1.0*pi2*sin(pi2*theta)) * (M + N*cos(pi2*phi)), 
-                         pi2*cos(pi2*theta) * (M+N*cos(pi2*phi)), 
-                         0.0);  
-  vec3 gradientV = vec3((-1.0*pi2*N*cos(pi2*theta)) * sin(pi2*phi), 
-                        (-1.0*pi2*N*sin(pi2*theta)) * sin (pi2*phi), 
-                        pi2*N*cos(pi2*phi));
+  float theta = parametric[0] * pi2;
+  float phi = parametric[1] * pi2;
 
-  c0 = normalize(gradientU);  // tangent
-  c1 = cross(normalize(gradientU),  // normal
-             normalize(gradientV));
-  c2 = cross(c1, c0);;  // binormal
+  float coeff = M + N*cos(phi);
+  float x = coeff*cos(theta);
+  float y = coeff*sin(theta);
+  float z = N*sin(phi);
+  gl_Position = gl_ModelViewProjectionMatrix * vec4(x, y, z, 1);
+
+  eyeDirection = normalize(eyePosition - vec3(x, y, z));  // XXX fix me
+  lightDirection = normalize(lightPosition - vec3(x, y, z));
+  vec3 halfAngle = normalize((lightDirection + eyeDirection)/2.0);
+
+  vec3 gradientU = normalize(vec3(-(M + N*cos(phi))*sin(theta),
+                        (M + N*cos(phi))*cos(theta),
+                        0.0));
+  
+  vec3 gradientV = normalize(vec3(-N*sin(phi)*cos(theta),
+                        -N*sin(theta)*sin(phi),
+                        N*cos(phi)));
+
+  c0 = gradientU;  // tangent
+  c1 = gradientV;
+  c2 = normalize(cross(gradientU,  // normal
+             gradientV));
+  //c1 = normalize(cross(c2, c0));  // binormal
 }
 // Wolfram
 // x
-// diff((M + N*cos(phi*pi2))*cos(theta*pi2), theta)
-// diff((M + N*cos(phi*pi2))*cos(theta*pi2), phi)
+// diff((M + N*cos(phi))*cos(theta), theta)
+// diff((M + N*cos(phi))*cos(theta), phi)
 // y
-// diff((M + N*cos(phi*pi2))*sin(theta*pi2), theta)
-// diff((M + N*cos(phi*pi2))*sin(theta*pi2), phi)
+// diff((M + N*cos(phi))*sin(theta), theta)
+// diff((M + N*cos(phi))*sin(theta), phi)
 // z
-// diff(N*sin(phi*pi2), theta)
-// diff(N*sin(phi*pi2), phi)
+// diff(N*sin(phi), theta)
+// diff(N*sin(phi), phi)
