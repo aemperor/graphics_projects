@@ -15,7 +15,7 @@ varying vec3 c0, c1, c2;
 void main()
 {
   const float pi2 = 6.28318530;  // 2 times Pi
-  normalMapTexCoord = vec2(-6.0*parametric[0], 2.0*parametric[1]);
+  normalMapTexCoord = vec2(-6.0*parametric[0], -2.0*parametric[1]);
 
   float M = torusInfo[0];
   float N = torusInfo[1];
