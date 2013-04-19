@@ -37,5 +37,5 @@ void main()
     specularCoeff = 0.0;
 
   //gl_FragColor = vec4(LMa + LMd*diffuseCoeff) * texture2D(decal, normalMapTexCoord) + specularCoeff*LMs;
-  gl_FragColor = vec4(LMa + LMd*diffuseCoeff*texture + LMs*specularCoeff);
+  gl_FragColor = vec4(LMa + LMd*diffuseCoeff*texture + specularCoeff);
 }
