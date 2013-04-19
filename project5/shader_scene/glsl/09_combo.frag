@@ -21,8 +21,12 @@ void main()
 {
   mat3 M = mat3(c0, c1, c2);
 
-  vec4 normals = (texture2D(normalMap, normalMapTexCoord) * 2.0) - 1.0;
-  vec3 reflection = reflect(eyeDirection, vec3(normals));
+  vec3 normals = (texture2D(normalMap, normalMapTexCoord) * 2.0) - 1.0;
+  eyeDirection = eyeDirection * M;
+
+  vec3 reflection = reflect(-1 * eyeDirection, normals);
+  reflection = normalize(M * reflection);
+  reflection = normalize(objectToWorld * reflection);
 
   vec3 lightSurface = normalize(lightDirection * M);
   float diffuseCoeff = max(dot(normals[2], lightSurface[2]), 0.0); // use z component
@@ -35,6 +39,6 @@ void main()
     specularCoeff = 0.0;
 
   gl_FragColor = textureCube(envmap, reflection) * 0.6 +
-                             (0.5 * LMd*diffuseCoeff + LMa) +
+                             (0.5 * (LMd*diffuseCoeff + LMa)) +
                              (0.5 * LMs*specularCoeff);
 }
