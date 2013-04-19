@@ -21,8 +21,7 @@ void main()
 {
   mat3 M = mat3(c0, c1, c2);
   
-  vec3 reflection = reflect(eyeDirection, vec3(0, 0, 1));
-  vec3 reflectionWorldCoords = reflection * objectToWorld;
+  vec3 reflection = reflect(M * eyeDirection, M * c2);
 
-  gl_FragColor = textureCube(envmap, reflection);
+  gl_FragColor = textureCube(envmap, -1.0 * reflection * M);
 }

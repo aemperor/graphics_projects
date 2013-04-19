@@ -29,13 +29,12 @@ void main()
   vec3 halfAngleSurface = normalize(halfAngle * M);
 
   vec3 lightSurface = normalize(lightDirection * M);
-  float diffuseCoeff = max(normals * lightSurface[2], 0.0); // use z component
+  float diffuseCoeff = max(dot(normals, lightSurface[2]), 0.0); // use z component
 
-  vec3 specularContribution = normals * halfAngleSurface[2];
+  vec3 specularContribution = max(normals * halfAngleSurface[2], 0.0);
   float specularCoeff = max(pow(specularContribution, shininess), 0.0);
   if (diffuseCoeff == 0.0)
     specularCoeff = 0.0;
 
-  //gl_FragColor = vec4(LMa + LMd*diffuseCoeff) * texture2D(decal, normalMapTexCoord) + specularCoeff*LMs;
-  gl_FragColor = vec4(LMa + LMd*diffuseCoeff*texture + specularCoeff);
+  gl_FragColor = vec4(LMa + diffuseCoeff*texture*LMd + specularCoeff*LMs);
 }

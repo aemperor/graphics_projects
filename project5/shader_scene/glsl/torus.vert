@@ -28,7 +28,7 @@ void main()
   float z = N*sin(phi);
   gl_Position = gl_ModelViewProjectionMatrix * vec4(x, y, z, 1);
 
-  eyeDirection = normalize(eyePosition - vec3(x, y, z));  // XXX fix me
+  eyeDirection = normalize(eyePosition - vec3(x, y, z));
   lightDirection = normalize(lightPosition - vec3(x, y, z));
 
   vec3 gradientU = normalize(vec3(-(M + N*cos(phi))*sin(theta),
