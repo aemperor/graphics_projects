@@ -20,8 +20,13 @@ varying vec3 c0, c1, c2;
 void main()
 {
   mat3 M = mat3(c0, c1, c2);
-  
-  vec3 reflection = reflect(M * eyeDirection, M * c2);
 
-  gl_FragColor = textureCube(envmap, -1.0 * reflection * M);
+  vec3 normals = (texture2D(normalMap, normalMapTexCoord) * 2.0) - 1.0;
+  eyeDirection = eyeDirection * M;
+
+  vec3 reflection = reflect(-1 * eyeDirection, vec3(0, 0, 1));
+  reflection = normalize(M * reflection);
+  reflection = normalize(objectToWorld * reflection);
+
+  gl_FragColor = textureCube(envmap, reflection);
 }
