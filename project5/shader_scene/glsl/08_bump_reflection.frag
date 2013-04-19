@@ -21,9 +21,12 @@ void main()
 {
   mat3 M = mat3(c0, c1, c2);
 
-  vec4 normals = (texture2D(normalMap, normalMapTexCoord) * 2.0) - 1.0;
+  vec3 normals = (texture2D(normalMap, normalMapTexCoord) * 2.0) - 1.0;
+  vec3 arrgh = vec3(c2[0] + normals[0],
+                    c2[1] + normals[1],
+                    c2[2] + normals[2]);
 
-  vec3 reflection = reflect(eyeDirection, normals);
+  vec3 reflection = reflect(M * eyeDirection, normalize(M * arrgh));
 
-  gl_FragColor = textureCube(envmap, reflection);
+  gl_FragColor = textureCube(envmap, -1.0 * normalize(reflection * M));
 }

@@ -34,8 +34,7 @@ void main()
   if (diffuseCoeff == 0.0)
     specularCoeff = 0.0;
 
-  gl_FragColor = textureCube(envmap, 
-                             (0.6 * reflection) +
+  gl_FragColor = textureCube(envmap, reflection) * 0.6 +
                              (0.5 * LMd*diffuseCoeff + LMa) +
-                             (0.5 * LMs*specularCoeff));
+                             (0.5 * LMs*specularCoeff);
 }
