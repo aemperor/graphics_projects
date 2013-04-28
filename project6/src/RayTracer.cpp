@@ -60,11 +60,31 @@ Vec3d RayTracer::traceRay( const ray& r, const Vec3d& thresh, int depth )
     // Instead of just returning the result of shade(), add some
     // more steps: add in the contributions from reflected and refracted
     // rays.
-
     const Material& m = i.getMaterial();
+    Vec3d kt = m.kt(i);
+    Vec3d kr = m.kr(i);
 
-    return m.shade(scene, r, i);
+    if (depth == 0) {
+      return m.shade(scene, r, i);
+    }
+    else {
+      Vec3d reflectAngle = 2 * (-r.getDirection() * i.N) * i.N + r.getDirection();
+      reflectAngle.normalize();
+      double incidentIndex = 1.0;
+      double transmitIndex = m.index(i);
+      double eta = incidentIndex / transmitIndex;
 
+      double cosIncident = i.N * r.getDirection();
+      double cosTransmit = sqrt(1 - pow(eta, 2) * (1 - pow(cosIncident, 2)));
+
+      Vec3d transmitAngle = (eta * cosIncident - cosTransmit) * i.N - eta * r.getDirection();
+
+      ray reflectRay(r.at(i.t), reflectAngle, ray::REFLECTION);
+      ray transmitRay(r.at(i.t), transmitAngle, ray::REFRACTION);
+      Vec3d reflect = traceRay(reflectRay, thresh, depth - 1);
+      Vec3d transmit = traceRay(transmitRay, thresh, depth - 1);
+     return m.shade(scene, r, i) + kr * reflect + kt * transmit;
+    }
 	
   } else {
     // No intersection.  This ray travels to infinity, so we color
