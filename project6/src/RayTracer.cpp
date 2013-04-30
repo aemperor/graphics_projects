@@ -64,26 +64,33 @@ Vec3d RayTracer::traceRay( const ray& r, const Vec3d& thresh, int depth )
     Vec3d kt = m.kt(i);
     Vec3d kr = m.kr(i);
 
-    if (depth == 0) {
-      return m.shade(scene, r, i);
-    }
-    else {
-      Vec3d reflectAngle = 2 * (-r.getDirection() * i.N) * i.N + r.getDirection();
+    if (depth < traceUI->getDepth()) {
+      Vec3d reflectAngle = ((2 * (-r.getDirection() * i.N)) * i.N) + r.getDirection();
       reflectAngle.normalize();
-      double incidentIndex = 1.0;
-      double transmitIndex = m.index(i);
-      double eta = incidentIndex / transmitIndex;
+      // double incidentIndex = 1.0;
+      // double transmitIndex = m.index(i);
+      // double eta = incidentIndex / transmitIndex;
 
-      double cosIncident = i.N * r.getDirection();
-      double cosTransmit = sqrt(1 - pow(eta, 2) * (1 - pow(cosIncident, 2)));
+      // double cosIncident = i.N * r.getDirection();
+      // double cosTransmit = sqrt(1 - pow(eta, 2) * (1 - pow(cosIncident, 2)));
 
-      Vec3d transmitAngle = (eta * cosIncident - cosTransmit) * i.N - eta * r.getDirection();
+      // Vec3d transmitAngle = (eta * cosIncident - cosTransmit) * i.N - eta * r.getDirection();
 
-      ray reflectRay(r.at(i.t), reflectAngle, ray::REFLECTION);
-      ray transmitRay(r.at(i.t), transmitAngle, ray::REFRACTION);
-      Vec3d reflect = traceRay(reflectRay, thresh, depth - 1);
-      Vec3d transmit = traceRay(transmitRay, thresh, depth - 1);
-     return m.shade(scene, r, i) + kr * reflect + kt * transmit;
+
+  
+      ray reflectRay(r.at(i.t - 0.01), reflectAngle, ray::REFLECTION);
+      Vec3d reflect = traceRay(reflectRay, thresh, depth + 1);
+
+      // Something's not right with transmitAngle, so fix that first!
+      //ray transmitRay(r.at(i.t + 0.01), transmitAngle, ray::REFRACTION);
+      //Vec3d transmit = traceRay(transmitRay, thresh, depth - 1);
+
+      // The following lines of code below are just for testing.
+      // ray testRay(r.at(i.t + 0.01), r.getDirection(), ray::REFRACTION);
+      // Vec3d test = traceRay(testRay, thresh, depth+1);
+      return m.shade(scene, r, i); //+ kr * reflect + kt * transmit;
+    } else {
+      return m.shade(scene, r, i);
     }
 	
   } else {

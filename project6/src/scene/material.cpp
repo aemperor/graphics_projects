@@ -32,9 +32,9 @@ Vec3d Material::shade( Scene *scene, const ray& r, const isect& i ) const
   // like this:
   //
   Vec3d phong = ke(i) + ka(i) * scene->ambient();
-  cout << "ka(i): " << ka(i) << " ambient: " << scene->ambient() << endl;
+  //cout << "ka(i): " << ka(i) << " ambient: " << scene->ambient() << endl;
   Vec3d normal = i.N;
-  cout << "normal =  " << normal << endl;
+  //cout << "normal =  " << normal << endl;
   Vec3d iters;
   Vec3d sample = Vec3d(1.0, 1.0, 1.0);
 
@@ -43,10 +43,10 @@ Vec3d Material::shade( Scene *scene, const ray& r, const isect& i ) const
     Light* pLight = *litr;
 
     Vec3d lightDir = (pLight->getDirection(r.at(i.t)));
-    cout << "lightDir = " << lightDir << endl;
+    //cout << "lightDir = " << lightDir << endl;
 
     float lDotN = normal*(lightDir);
-    cout << "\tlDotN: " << lDotN << endl;
+    //cout << "\tlDotN: " << lDotN << endl;
 
     Vec3d reflection = 2*(lDotN)*normal - lightDir;
     double VdotR = (-r.getDirection()) * reflection;
@@ -55,14 +55,14 @@ Vec3d Material::shade( Scene *scene, const ray& r, const isect& i ) const
             ks(i)*pow(max(VdotR, 0.0), shininess(i)));
     //iters *= min(1.0, (pLight->distanceAttenuation(r.at(i.t))));
 
-    cout << "iters = " << iters << endl;
-    cout << "kd: " << kd(i) << endl;
-    cout << "ks: " << ks(i) << endl;
-    cout << "reflection " << reflection << endl;
-    cout << "V direction " << r.getDirection() << endl;
-    cout << "shininess " << shininess(i);
-    cout << "sample " << sample << endl;
-    cout << "V*Reflection " << VdotR << endl;
+    //cout << "iters = " << iters << endl;
+    //cout << "kd: " << kd(i) << endl;
+    //cout << "ks: " << ks(i) << endl;
+    //cout << "reflection " << reflection << endl;
+    //cout << "V direction " << r.getDirection() << endl;
+    //cout << "shininess " << shininess(i);
+    //cout << "sample " << sample << endl;
+    //cout << "V*Reflection " << VdotR << endl;
     phong += iters;
   }
 	
