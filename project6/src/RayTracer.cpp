@@ -36,7 +36,6 @@ Vec3d RayTracer::trace( double x, double y )
   scene->intersectCache.clear();
 
   ray r( Vec3d(0,0,0), Vec3d(0,0,0), ray::VISIBILITY );
-
   scene->getCamera().rayThrough( x,y,r );
   Vec3d ret = traceRay( r, Vec3d(1.0,1.0,1.0), 0 );
   ret.clamp();
@@ -60,34 +59,59 @@ Vec3d RayTracer::traceRay( const ray& r, const Vec3d& thresh, int depth )
     // Instead of just returning the result of shade(), add some
     // more steps: add in the contributions from reflected and refracted
     // rays.
+    
     const Material& m = i.getMaterial();
     Vec3d kt = m.kt(i);
     Vec3d kr = m.kr(i);
 
     if (depth < traceUI->getDepth()) {
+
+      // Work for Reflection Ray
+      // We may need to do a check beforehand to see if we can even reflect
+      // i.e. We don't reflect when the ray is a refracting ray inside an object... right?
       Vec3d reflectAngle = ((2 * (-r.getDirection() * i.N)) * i.N) + r.getDirection();
       reflectAngle.normalize();
-      // double incidentIndex = 1.0;
-      // double transmitIndex = m.index(i);
-      // double eta = incidentIndex / transmitIndex;
-
-      // double cosIncident = i.N * r.getDirection();
-      // double cosTransmit = sqrt(1 - pow(eta, 2) * (1 - pow(cosIncident, 2)));
-
-      // Vec3d transmitAngle = (eta * cosIncident - cosTransmit) * i.N - eta * r.getDirection();
-
-
-  
       ray reflectRay(r.at(i.t - 0.01), reflectAngle, ray::REFLECTION);
       Vec3d reflect = traceRay(reflectRay, thresh, depth + 1);
 
-      // Something's not right with transmitAngle, so fix that first!
-      //ray transmitRay(r.at(i.t + 0.01), transmitAngle, ray::REFRACTION);
-      //Vec3d transmit = traceRay(transmitRay, thresh, depth - 1);
 
-      // The following lines of code below are just for testing.
-      // ray testRay(r.at(i.t + 0.01), r.getDirection(), ray::REFRACTION);
-      // Vec3d test = traceRay(testRay, thresh, depth+1);
+      // Work for Refraction Ray
+      double cos_i = i.N * r.getDirection();
+      // cout << "\tCos Incident " << cosIncident << endl;
+
+      double incidentIndex, transmitIndex;
+      if (r.type() == ray::REFRACTION) {
+        // We are a refraction ray, so we are inside an object.
+        // Incident index will be material's index, transmit index will be air (1.0)
+        incidentIndex = m.index(i);
+        transmitIndex = 1.0;
+      } else {
+        // We are outside an object, and light will refract inside.
+        // Incident index will be air (1.0), transmit index will be material's index
+        incidentIndex = 1.0;
+        transmitIndex = m.index(i);
+      }
+      double eta = incidentIndex / transmitIndex;
+      cout << "Eta: " << eta << endl;
+
+      // Calculating cos(theta_t)
+      double cos_t;
+      Vec3d transmitAngle;
+      double inner = 1 - (pow(eta, 2) * (1-pow(cos_i, 2)));
+      if (inner <0 ) {
+        // -1, so sqrt(inner) is imaginary.
+        // That means Total Internal Reflection occurs, and we use reflection instead.
+        Vec3d transmitAngle = ((2 * (-r.getDirection() * i.N)) * i.N) + r.getDirection();
+      } else {
+        // sqrt(inner) is not imaginary, so refraction can occur.
+        cos_t = sqrt(inner);
+        Vec3d transmitAngle = ((cos_i - cos_t) * i.N) - (eta * r.getDirection());
+      }
+      transmitAngle.normalize();
+      cout << "Transmit Angle: " << transmitAngle << endl; 
+      ray transmitRay(r.at(i.t + 0.01), transmitAngle, ray::REFRACTION);
+      Vec3d transmit = traceRay(transmitRay, thresh, depth - 1);
+      
       return m.shade(scene, r, i); //+ kr * reflect + kt * transmit;
     } else {
       return m.shade(scene, r, i);

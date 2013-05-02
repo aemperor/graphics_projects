@@ -20,7 +20,7 @@ class SceneObject;
 // always be normalized!)
 
 class ray {
-public:
+public:    
 	enum RayType
 	{
 		VISIBILITY,
@@ -50,7 +50,7 @@ public:
 protected:
 	Vec3d p;
 	Vec3d d;
-	RayType t; 
+	RayType t;
 };
 
 // The description of an intersection point.
