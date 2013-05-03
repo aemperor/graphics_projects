@@ -83,9 +83,40 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
   const Vec3d& c = parent->vertices[ids[2]];
 
   // YOUR CODE HERE
+  Vec3d v1 = b - a;
+  Vec3d v2 = c - b;
 
-  return false;
+  Vec3d normal = v1 ^ v2;
+  
+  double d = -a * normal;
+
+  double t = - (r.getPosition() * normal + d) / (normal * r.getDirection());
+
+  Vec3d p = r.at(t);
+
+  Vec3d aToP = p - a;
+  Vec3d bToP = p - b;
+  Vec3d cToP = p - c;
+  Vec3d aToB = b - a;
+  Vec3d bToC = c - b;
+  Vec3d cToA = c - a;
+
+  bool inTriangle;
+  
+  if ( ((aToP ^ aToB)[2] >= 0) && ((bToP ^ bToC)[2] >= 0) && ((cToP ^ cToA)[2] >= 0))
+    inTriangle = true;
+  else if ( ((aToP ^ aToB)[2] < 0) && ((bToP ^ bToC)[2] < 0) && ((cToP ^ cToA)[2] < 0))
+  {
+    inTriangle = true;
+  }
+  else
+    inTriangle = false;
+
+  i.setT(t);
+  i.setN(normal);
 }
+
+
 
 void Trimesh::generateNormals()
     // Once you've loaded all the verts and faces, we can generate per
