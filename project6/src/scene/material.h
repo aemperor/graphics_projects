@@ -174,8 +174,6 @@ class Material
         _shininess( Vec3d(sh,sh,sh) ), _index( Vec3d(in,in,in) ) {}
 
   virtual Vec3d shade( Scene *scene, const ray& r, const isect& i ) const;
-
-
     
   Material &
   operator+=( const Material &m )
