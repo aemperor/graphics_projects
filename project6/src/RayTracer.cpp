@@ -78,48 +78,41 @@ Vec3d RayTracer::traceRay( const ray& r, const Vec3d& thresh, int depth )
       // Work for Refraction Ray
       Vec3d transmit;
       if (!m.kt(i).iszero()) {
-        cout << "TRANSPARENT!" << endl;
-        double cos_i; 
-        
+
+        ray::RayType rayType;
+        Vec3d transmitAngle;
+        double eta;
         double incidentIndex, transmitIndex;
+        double cos_i, cos_t;
+
+        Vec3d normal;
+
         if (r.type() == ray::REFRACTION) {
-          // We are a refraction ray, so we are inside an object.
-          // Incident index will be material's index, transmit index will be air (1.0)
-          cos_i = (-i.N) * r.getDirection();
+          rayType = ray::VISIBILITY;
           incidentIndex = m.index(i);
           transmitIndex = 1.0;
+          normal = -i.N;
         } else {
-          // We are outside an object, and light will refract inside.
-          // Incident index will be air (1.0), transmit index will be material's index
-          cos_i = i.N * r.getDirection();
+          rayType = ray::REFRACTION;
           incidentIndex = 1.0;
           transmitIndex = m.index(i);
+          normal = i.N;
         }
-        cout << "\tCos Incident " << cos_i << endl;
-        double eta = incidentIndex / transmitIndex;
-        // cout << "Eta: " << eta << endl;
 
-        // Calculating cos(theta_t)
-        double cos_t;
-        Vec3d transmitAngle;
-        double inner = 1 - (pow(eta, 2) * (1-pow(cos_i, 2)));
-        cout << "INNER " << inner << endl;
-        if (inner < 0 ) {
-          // -1, so sqrt(inner) is imaginary.
-          // That means Total Internal Reflection occurs, and we use reflection instead.
-          transmitAngle = ((2 * (-r.getDirection() * i.N)) * i.N) + r.getDirection();
-        } else {
-          // sqrt(inner) is not imaginary, so refraction can occur.
-          cos_t = sqrt(inner);
-          transmitAngle = ((eta*cos_i - cos_t) * i.N) - (eta * r.getDirection());
-        }
-        transmitAngle.normalize();
-        cout << "Transmit Angle: " << transmitAngle << endl; 
-        ray transmitRay(r.at(i.t + 0.01), transmitAngle, ray::REFRACTION);
+        eta = incidentIndex / transmitIndex;
+
+        cos_i = -(normal * r.getDirection());
+
+        cos_t = sqrt(1 - pow(eta, 2)*(1 - pow(cos_i, 2)));
+
+        transmitAngle = (eta * r.getDirection()) + (eta*cos_i - cos_t)*normal;
+
+        ray transmitRay(r.at(i.t + 0.01), transmitAngle, rayType);
+
         transmit = traceRay(transmitRay, thresh, depth + 1);
       }
       
-      return m.shade(scene, r, i) + m.kr(i) * reflect + m.kt(i) * transmit;
+      return m.shade(scene, r, i) + m.kr(i) % reflect + m.kt(i) % transmit;
     } else {
       return m.shade(scene, r, i);
     }
