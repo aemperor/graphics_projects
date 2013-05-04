@@ -69,15 +69,15 @@ Vec3d RayTracer::traceRay( const ray& r, const Vec3d& thresh, int depth )
       // We may need to do a check beforehand to see if we can even reflect
       // i.e. We don't reflect when the ray is a refracting ray inside an object... right?
       Vec3d reflect;
-      if (!m.kr(i).iszero()) {
-        Vec3d reflectAngle = ((2 * (-r.getDirection() * i.N)) * i.N) + r.getDirection();
-        reflectAngle.normalize();
-        ray reflectRay(r.at(i.t - 0.01), reflectAngle, ray::REFLECTION);
-        reflect = traceRay(reflectRay, thresh, depth + 1);
-      }
+      Vec3d reflectAngle = ((2 * (-r.getDirection() * i.N)) * i.N) + r.getDirection();
+      reflectAngle.normalize();
+      ray reflectRay(r.at(i.t - 0.01), reflectAngle, ray::REFLECTION);
+      reflect = traceRay(reflectRay, thresh, depth + 1);
+      cout << "kr " << kr << endl;
+
       // Work for Refraction Ray
       Vec3d transmit;
-      if (!m.kt(i).iszero()) {
+      if (!kt.iszero()) {
 
         ray::RayType rayType;
         Vec3d transmitAngle;
@@ -112,7 +112,7 @@ Vec3d RayTracer::traceRay( const ray& r, const Vec3d& thresh, int depth )
         transmit = traceRay(transmitRay, thresh, depth + 1);
       }
       
-      return m.shade(scene, r, i) + m.kr(i) % reflect + m.kt(i) % transmit;
+      return m.shade(scene, r, i) + kr % reflect + kt % transmit;
     } else {
       return m.shade(scene, r, i);
     }
