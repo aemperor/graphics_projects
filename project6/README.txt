@@ -1,5 +1,13 @@
-Name(s):
-UT EID(s):
-UTCS ID(s):
+Members of the group (with UT EID and UTCS ID):
 
-Comments:
+Alexis Emperador
+UTeid: ase369
+CSid: aemperor
+
+Isaac Aggrey
+UTeid: ia846
+CSid: iaggrey
+
+Fayz Rahman
+UTeid: fnr75
+CSid: rahmanf

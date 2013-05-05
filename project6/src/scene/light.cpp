@@ -25,7 +25,6 @@ Vec3d DirectionalLight::shadowAttenuation( const Vec3d& P ) const
   if (scene->intersect(shadowRay, i)) {
     Vec3d tr = i.getMaterial().kt(i);
     ret = tr % Vec3d(1, 1, 1);
-    cout << "kt " << tr << endl;
   } else {
     ret = Vec3d(1, 1, 1);
   }
@@ -59,7 +58,7 @@ double PointLight::distanceAttenuation( const Vec3d& P ) const
   double a2 = quadraticTerm;
 
   double attenuation = min(1.0, 1/ (a0 + a1 * length + a2 * pow(length, 2)));
-  cout << "denom " << 1/ (a0 + a1 * length + a2 * pow(length, 2)) << endl;
+  //cout << "denom " << 1/ (a0 + a1 * length + a2 * pow(length, 2)) << endl;
 
   return attenuation;
 }
@@ -93,7 +92,6 @@ Vec3d PointLight::shadowAttenuation(const Vec3d& P) const
     Vec3d collisionToObj = collisionPt - P;
     double collisionLength = collisionToObj.length();
     
-    cout << "Collision Length" << collisionLength << "Light Length " << lightLength << endl;
     if (collisionLength < lightLength) {
       Vec3d tr = i.getMaterial().kt(i);
       ret = tr % Vec3d(1, 1, 1);

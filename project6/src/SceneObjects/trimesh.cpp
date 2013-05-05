@@ -81,39 +81,53 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
   const Vec3d& a = parent->vertices[ids[0]];
   const Vec3d& b = parent->vertices[ids[1]];
   const Vec3d& c = parent->vertices[ids[2]];
-
-  // YOUR CODE HERE
-  Vec3d v1 = b - a;
-  Vec3d v2 = c - b;
-
-  Vec3d normal = v1 ^ v2;
-  
-  double d = -a * normal;
-
-  double t = - (r.getPosition() * normal + d) / (normal * r.getDirection());
-
-  Vec3d p = r.at(t);
-
-  Vec3d aToP = p - a;
-  Vec3d bToP = p - b;
-  Vec3d cToP = p - c;
-  Vec3d aToB = b - a;
-  Vec3d bToC = c - b;
-  Vec3d cToA = c - a;
-
-  bool inTriangle;
-  
-  if ( ((aToP ^ aToB)[2] >= 0) && ((bToP ^ bToC)[2] >= 0) && ((cToP ^ cToA)[2] >= 0))
-    inTriangle = true;
-  else if ( ((aToP ^ aToB)[2] < 0) && ((bToP ^ bToC)[2] < 0) && ((cToP ^ cToA)[2] < 0))
-  {
-    inTriangle = true;
+  bool inTriangle = false;
+  Vec3d norm;
+  if (parent->normals.empty()) {
+    norm = (b-a) ^ (c-a);
+    norm.normalize();
+  } else {
+    norm = ((parent->normals[0]) + (parent->normals[1]) + (parent->normals[2])) / 3;
+    norm.normalize();
   }
-  else
-    inTriangle = false;
+  //norm = (b-a) ^ (c-a);
+  //norm.normalize();
+  double d = -(a * norm);
 
-  i.setT(t);
-  i.setN(normal);
+  double t = -((r.getPosition() * norm) + d) / (norm * r.getDirection());
+
+  if (t >= 0) {
+    //cout << "t = " << t << " norm = " << norm << endl;
+    Vec3d p = r.at(t);
+
+    Vec3d v0 = b-a;
+    Vec3d v1 = c-a;
+    Vec3d v2 = p-a;
+
+    double d00 = v0*v0;
+    double d01 = v0*v1;
+    double d11 = v1*v1;
+    double d20 = v2*v0;
+    double d21 = v2*v1;
+
+    double denominator = (d00 * d11) - (d01 * d01);
+    double v = (d11*d20 - d01*d21) / denominator;
+    double w = (d00*d21 - d01*d20) / denominator;
+    double u = 1.0-v-w;
+
+    
+    inTriangle = (v>=0 &&  w >=0 && (v+w <= 1));
+    if (inTriangle) {
+      //cout << "\t(" << u << ", " << v << ", " << w << ")" << endl;
+      i.setT(t);
+      i.setBary(u, v, w);
+      i.setN(normal);
+      i.setObject(this);
+      i.setMaterial(getMaterial());
+    }
+  }
+
+  return inTriangle;
 }
 
 
