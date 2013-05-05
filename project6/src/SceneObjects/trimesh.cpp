@@ -105,6 +105,8 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
     Vec3d v1 = c-a;
     Vec3d v2 = p-a;
 
+    // Math inspired by: http://gamedev.stackexchange.com/a/23745, from 
+    // Christer Ericson's Real-Time Collision Detection
     double d00 = v0*v0;
     double d01 = v0*v1;
     double d11 = v1*v1;
