@@ -13,8 +13,6 @@ extern bool debugMode;
 // the color of that point.
 Vec3d Material::shade( Scene *scene, const ray& r, const isect& i ) const
 {
-  // YOUR CODE HERE
-
   // For now, this method just returns the diffuse color of the object.
   // This gives a single matte color for every distinct surface in the
   // scene, and that's it.  Simple, but enough to get you started.
@@ -32,9 +30,7 @@ Vec3d Material::shade( Scene *scene, const ray& r, const isect& i ) const
   // like this:
   //
   Vec3d phong = ke(i) + ka(i) * scene->ambient();
-  //cout << "ka(i): " << ka(i) << " ambient: " << scene->ambient() << endl;
   Vec3d normal = i.N;
-  //cout << "normal =  " << normal << endl;
   Vec3d iters;
   Vec3d sample = Vec3d(1.0, 1.0, 1.0);
 
@@ -44,10 +40,8 @@ Vec3d Material::shade( Scene *scene, const ray& r, const isect& i ) const
 
     Vec3d atten = pLight->shadowAttenuation(r.at(i.t));
     Vec3d lightDir = (pLight->getDirection(r.at(i.t)));
-    //cout << "lightDir = " << lightDir << endl;
 
     float lDotN = normal*(lightDir);
-    //cout << "\tlDotN: " << lDotN << endl;
 
     Vec3d reflection = 2*(lDotN)*normal - lightDir;
     double VdotR = (-r.getDirection()) * reflection;
@@ -56,24 +50,7 @@ Vec3d Material::shade( Scene *scene, const ray& r, const isect& i ) const
         ks(i)*pow(max(VdotR, 0.0), shininess(i)));
     iters *= min(1.0, (pLight->distanceAttenuation(r.at(i.t))));
 
-    //cout << "iters = " << iters << endl;
-    // cout << "kd: " << kd(i) << endl;
-    // cout << "ks: " << ks(i) << endl;
-    //cout << "reflection " << reflection << endl;
-    //cout << "V direction " << r.getDirection() << endl;
-    //cout << "shininess " << shininess(i);
-    //cout << "sample " << sample << endl;
-    //cout << "V*Reflection " << VdotR << endl;
-    // cout << "Normal: " << normal << endl;
-    // cout << "L dot N: " << lDotN << endl;
-    // cout << "V dot R: " << VdotR << endl;
-    // cout << "shadow atten: " << atten << endl;
-    // cout << "Light contrib: " << atten % pLight->getColor(r.at(i.t)) << endl;
-    // cout << "Diffuse: " << (kd(i)*max((lDotN), 0.0f)) << endl;
-    // cout << "Specular: " <<  ks(i)*pow(max(VdotR, 0.0), shininess(i)) << endl;
-    // cout << "iters " << iters << endl;
     phong += iters;
-    // cout << "Phong total: " << phong << endl;
   }
 
   return phong;

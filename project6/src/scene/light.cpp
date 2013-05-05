@@ -15,8 +15,6 @@ double DirectionalLight::distanceAttenuation( const Vec3d& P ) const
 
 Vec3d DirectionalLight::shadowAttenuation( const Vec3d& P ) const
 {
-  // YOUR CODE HERE:
-  // You should implement shadow-handling code here.
   isect i;
   Vec3d ret;
   Vec3d vec = -orientation;
@@ -46,19 +44,12 @@ Vec3d DirectionalLight::getDirection( const Vec3d& P ) const
 
 double PointLight::distanceAttenuation( const Vec3d& P ) const
 {
-
-  // You'll need to modify this method to attenuate the intensity 
-  // of the light based on the distance between the source and the 
-  // point P.  For now, we assume no attenuation and just return 1.0
-
-
   double length = (position - P).length();
   double a0 = constantTerm;
   double a1 = linearTerm;
   double a2 = quadraticTerm;
 
   double attenuation = min(1.0, 1/ (a0 + a1 * length + a2 * pow(length, 2)));
-  //cout << "denom " << 1/ (a0 + a1 * length + a2 * pow(length, 2)) << endl;
 
   return attenuation;
 }
@@ -79,8 +70,6 @@ Vec3d PointLight::getDirection( const Vec3d& P ) const
 
 Vec3d PointLight::shadowAttenuation(const Vec3d& P) const
 {
-  // YOUR CODE HERE:
-  // You should implement shadow-handling code here.
   isect i;
   Vec3d ret;
   Vec3d dir = position-P;
@@ -103,6 +92,4 @@ Vec3d PointLight::shadowAttenuation(const Vec3d& P) const
   }
 
   return ret;
-
-  // return Vec3d(1,1,1);
 }

@@ -87,18 +87,14 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
     norm = (b-a) ^ (c-a);
     norm.normalize();
   } else {
-    //cout << "Parent has Normals!" << endl;
     norm = ((parent->normals[ids[0]]) + (parent->normals[ids[1]]) + (parent->normals[ids[2]])) / 3.0;
     norm.normalize();
   }
-  //norm = (b-a) ^ (c-a);
-  //norm.normalize();
   double d = -(a * norm);
 
   double t = -((r.getPosition() * norm) + d) / (norm * r.getDirection());
 
   if (t >= 0.0) {
-    //cout << "t = " << t << " norm = " << norm << endl;
     Vec3d p = r.at(t);
 
     // Find barycentric coodinates of point on plane of triangle relative
@@ -123,7 +119,6 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
     
     inTriangle = (v>=0.0 &&  w >=0.0 && (v+w <= 1.0));
     if (inTriangle) {
-      //cout << "\t(" << u << ", " << v << ", " << w << ")" << endl;
       i.setT(t);
       i.setBary(u, v, w);
       i.setN(normal);
