@@ -52,19 +52,28 @@ Vec3d Material::shade( Scene *scene, const ray& r, const isect& i ) const
     Vec3d reflection = 2*(lDotN)*normal - lightDir;
     double VdotR = (-r.getDirection()) * reflection;
 
-    iters = atten % pLight->getColor(r.at(i.t)) % (kd(i)*max((lDotN), 0.0f) +
+    iters = (atten % pLight->getColor(r.at(i.t))) % (kd(i)*max((lDotN), 0.0f) +
         ks(i)*pow(max(VdotR, 0.0), shininess(i)));
-    //iters *= min(1.0, (pLight->distanceAttenuation(r.at(i.t))));
+    iters *= min(1.0, (pLight->distanceAttenuation(r.at(i.t))));
 
     //cout << "iters = " << iters << endl;
-    //cout << "kd: " << kd(i) << endl;
-    //cout << "ks: " << ks(i) << endl;
+    // cout << "kd: " << kd(i) << endl;
+    // cout << "ks: " << ks(i) << endl;
     //cout << "reflection " << reflection << endl;
     //cout << "V direction " << r.getDirection() << endl;
     //cout << "shininess " << shininess(i);
     //cout << "sample " << sample << endl;
     //cout << "V*Reflection " << VdotR << endl;
+    // cout << "Normal: " << normal << endl;
+    // cout << "L dot N: " << lDotN << endl;
+    // cout << "V dot R: " << VdotR << endl;
+    // cout << "shadow atten: " << atten << endl;
+    // cout << "Light contrib: " << atten % pLight->getColor(r.at(i.t)) << endl;
+    // cout << "Diffuse: " << (kd(i)*max((lDotN), 0.0f)) << endl;
+    // cout << "Specular: " <<  ks(i)*pow(max(VdotR, 0.0), shininess(i)) << endl;
+    // cout << "iters " << iters << endl;
     phong += iters;
+    // cout << "Phong total: " << phong << endl;
   }
 
   return phong;

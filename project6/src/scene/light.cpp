@@ -21,7 +21,7 @@ Vec3d DirectionalLight::shadowAttenuation( const Vec3d& P ) const
   Vec3d ret;
   Vec3d vec = -orientation;
   vec.normalize();
-  ray shadowRay(P, vec, ray::SHADOW);
+  ray shadowRay(P + (0.01)*vec, vec, ray::SHADOW);
   if (scene->intersect(shadowRay, i)) {
     Vec3d tr = i.getMaterial().kt(i);
     ret = tr % Vec3d(1, 1, 1);
@@ -86,7 +86,7 @@ Vec3d PointLight::shadowAttenuation(const Vec3d& P) const
   Vec3d dir = position-P;
   double lightLength = dir.length();
   dir.normalize();
-  ray shadowRay(P + (0.1)*dir, dir, ray::SHADOW);
+  ray shadowRay(P + (0.01)*dir, dir, ray::SHADOW);
   if (scene->intersect(shadowRay, i)) {
     Vec3d collisionPt = shadowRay.at(i.t);
     Vec3d collisionToObj = collisionPt - P;

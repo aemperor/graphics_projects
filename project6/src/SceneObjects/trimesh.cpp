@@ -87,7 +87,8 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
     norm = (b-a) ^ (c-a);
     norm.normalize();
   } else {
-    norm = ((parent->normals[0]) + (parent->normals[1]) + (parent->normals[2])) / 3;
+    //cout << "Parent has Normals!" << endl;
+    norm = ((parent->normals[ids[0]]) + (parent->normals[ids[1]]) + (parent->normals[ids[2]])) / 3.0;
     norm.normalize();
   }
   //norm = (b-a) ^ (c-a);
@@ -96,10 +97,14 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
 
   double t = -((r.getPosition() * norm) + d) / (norm * r.getDirection());
 
-  if (t >= 0) {
+  if (t >= 0.0) {
     //cout << "t = " << t << " norm = " << norm << endl;
     Vec3d p = r.at(t);
 
+    // Find barycentric coodinates of point on plane of triangle relative
+    // to the points on the triangle. If two of the weights added together < 1,
+    // then we are inside! In addition, isect wants barycentric coodinates
+    // anyways, so we're done!
     Vec3d v0 = b-a;
     Vec3d v1 = c-a;
     Vec3d v2 = p-a;
@@ -116,14 +121,18 @@ bool TrimeshFace::intersectLocal( const ray& r, isect& i ) const
     double u = 1.0-v-w;
 
     
-    inTriangle = (v>=0 &&  w >=0 && (v+w <= 1));
+    inTriangle = (v>=0.0 &&  w >=0.0 && (v+w <= 1.0));
     if (inTriangle) {
       //cout << "\t(" << u << ", " << v << ", " << w << ")" << endl;
       i.setT(t);
       i.setBary(u, v, w);
       i.setN(normal);
       i.setObject(this);
-      i.setMaterial(getMaterial());
+      if (parent->materials.empty()) {
+        i.setMaterial(getMaterial());
+      } else {
+        i.setMaterial(*parent->materials[ids[0]]);
+      }
     }
   }
 

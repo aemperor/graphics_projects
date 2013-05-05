@@ -73,7 +73,7 @@ Vec3d RayTracer::traceRay( const ray& r, const Vec3d& thresh, int depth )
       reflectAngle.normalize();
       ray reflectRay(r.at(i.t - 0.01), reflectAngle, ray::REFLECTION);
       reflect = traceRay(reflectRay, thresh, depth + 1);
-      cout << "kr " << kr << endl;
+      //cout << "kr " << kr << endl;
 
       // Work for Refraction Ray
       Vec3d transmit;
