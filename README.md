@@ -86,6 +86,6 @@ Misc: To load a file to be traced, use File->Open <p>
 <hr>
 <b>NOTE: 
 <ul>
-<li>ALL README.pdf and example pre-fixed files are credit to Dr. Edwards at UT.
+<li>ALL README.pdf, cpplint.py, and example pre-fixed files are credit to Dr. Edwards at UT.
 <li>Contributors of this repository worked on specific parts of each project or specific projects.</ul></b>
 
