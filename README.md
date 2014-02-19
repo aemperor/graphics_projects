@@ -3,7 +3,7 @@ CS354 - Graphics
 
 This repository is from CS354 Graphics Spring 2013 at UT. 
 
-<h3>Project 1</h3><br><hr>
+<h3>Project 1</h3><hr>
 Overview: Turtle Graphics http://en.wikipedia.org/wiki/Turtle_graphics
 <br>
 Language: C++, OpenGL
@@ -15,8 +15,9 @@ Run Instructions: "make && ./turtle example1.txt"
 Working Code: True
 <br>
 Misc:
+<p>
 
-<h3>Project 2</h3><br><hr>
+<h3>Project 2</h3><hr>
 Overview: Billiards Table
 <br>
 Language: C++, OpenGL
@@ -26,9 +27,9 @@ Code Source: project2
 Run Instructions: "make && ./billiards"
 <br>
 Working Code: False
-<br> Misc: 
+<br> Misc: <p>
 
-<h3>Project 3</h3><br><hr>
+<h3>Project 3</h3><hr>
 Overview: Motion Capture http://en.wikipedia.org/wiki/Motion_capture
 <br>
 Language: C++, OpenGL
@@ -39,9 +40,9 @@ Run Instructions: "make && ./mocap 01_01.bvh"
 <br>
 Working Code: True
 <br> 
-Misc: http://www.youtube.com/watch?v=bp0Y0TVop8A
+Misc: http://www.youtube.com/watch?v=bp0Y0TVop8A <p>
 
-<h3>Project 4</h3><br><hr>
+<h3>Project 4</h3><hr>
 Overview: Mesh Object Viewer http://en.wikipedia.org/wiki/Wavefront_.obj_file
 <br>
 Language: C++, OpenGL
@@ -52,10 +53,10 @@ Run Instructions: "make && ./viewer original.mtl"
 <br>
 Working Code: True
 <br>
-Misc:
+Misc:<p>
 
 
-<h3>Project 5</h3><br><hr>
+<h3>Project 5</h3><hr>
 Overview: GLShaders
 <br>
 Language: C++, OpenGL
@@ -66,9 +67,9 @@ Run Instructions: "make rrun"
 <br>
 Working Code: True
 <br>
-Misc:
+Misc:<p>
 
-<h3>Project 6</h3><br><hr>
+<h3>Project 6</h3><hr>
 Overview: Ray Tracer
 <br>
 Language: C++, OpenGL
@@ -79,7 +80,7 @@ Run Instructions: "make -f Makefile.campus && ./ray"
 <br>
 Working Code: True
 <br>
-Misc: To load a file to be traced, use File->Open
+Misc: To load a file to be traced, use File->Open <p>
 
 <br>
 <hr>
