@@ -380,7 +380,7 @@ void Keyboard(unsigned char key, int x, int y) {
       break;
     case 'z':
       // cout << "Zoom in" << endl;
-      ZoomIn();
+        ZoomIn();
       break;
     case 'Z':
       // cout << "Zoom out" << endl;
